@@ -1,7 +1,7 @@
 "use strict";
+// dO we need to get all the categories for a user?
+const router  = require('express').Router();
 
-const express = require('express');
-const router  = express.Router();
 
 module.exports = (knex) => {
 
