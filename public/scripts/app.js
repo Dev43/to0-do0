@@ -27,14 +27,14 @@ $(() => {
   function renderTasks(task) {
     $('#tasks').empty();
     task.forEach(function(t){
-       $taskElem = createTaskElement(t);
-       $prevTask = $('#tasks li').first();
-       $taskElem.insertBefore($prevTask);
+      console.log(t);
+      $taskElem = createTaskElement(t);
+      $prevTask = $('#tasks li').first();
+      $taskElem.insertBefore($prevTask);
     });
   }
 
   function loadTasks(cb) {
-    console.log('loadTasks');
     $.ajax({
       url: '/tasks',
       method: 'GET',
