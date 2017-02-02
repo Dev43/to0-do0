@@ -13,9 +13,10 @@ $(() => {
 
   function renderTasks (task) {
     console.log('renderTasks');
+    $('#tasks').empty();
     task.forEach(function(t){
       // console.log(t);
-      // $taskElem = createTaskElement(t);
+       $taskElem = createTaskElement(t);
       // $prevTask = $("#tasks").first();
       // $taskElem.insertBefore($prevTask);
     });
@@ -52,14 +53,14 @@ $(() => {
     }
   });
 
-  $.ajax({
-    method: "GET",
-    url: "/api/users"
-  }).done((users) => {
-    for(user of users) {
-      $("<div>").text(user.name).appendTo($("body"));
-    }
-  });
+  // $.ajax({
+  //   method: "GET",
+  //   url: "/api/users"
+  // }).done((users) => {
+  //   for(user of users) {
+  //     //$("<div>").text(user.name).appendTo($("body"));
+  //   }
+  // });
   $.ajax({
     method: "GET",
     url: "/api/tasks"
