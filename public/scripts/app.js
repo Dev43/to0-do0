@@ -1,4 +1,6 @@
 $(() => {
+  $("#taskInput").focus();
+
   loadTasks(renderTasks);
 
   function createTaskElement (taskObj) {
