@@ -22,12 +22,13 @@ module.exports = (knex) => {
      }
 
      // the first promise gets called to check if the username is in the databse
-     db_helper.isUsernameInUsers('@PxG')
-     .then((result) => {return res.send("Username Exists, please pick another one!" )})
-     .catch( // new promise
-            db_helper
+     db_helper.isUsernameInUsers(userObj.username)
+     .then( () => {db_helper
             .newDbInput('users', userObj)
-            .then(() => {return res.send('Successfully Written!')}) // the second promise is called when there is an error (saying there is someone in the db)
+            .then(() => {return res.send('Successfully Written!')})
+            return;
+            })
+     .catch((err) => {return res.send("Username Exists, please pick another one!" )}
 );
 
   });
