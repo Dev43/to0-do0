@@ -46,7 +46,6 @@ $(() => {
     if(e.keyCode === 13){
       e.preventDefault();
       console.log($("#newTask").serialize());
-      // Need to sanitize input for security purposes!!
       $task = $("#newTask").serialize();
       $.ajax({
         url: "/tasks",
