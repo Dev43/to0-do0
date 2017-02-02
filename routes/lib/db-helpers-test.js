@@ -5,7 +5,7 @@ const PORT        = process.env.PORT || 8080;
 const ENV         = process.env.ENV || "development";
 const express     = require("express");
 const app         = express();
-const knexConfig  = require("../knexfile");
+const knexConfig  = require("../<div class=""></div>/knexfile");
 const knex        = require("knex")(knexConfig[ENV]);
 const dbHelper    = require('./db-helpers')(knex);
 

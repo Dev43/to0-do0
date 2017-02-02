@@ -5,7 +5,7 @@ module.exports = function makeDbHelpers(knex){
   return {
 
     newDbInput: function(tableName, rowToInsert ){ // made it so it can be a new user OR a new task
-      knex(tableName)
+      return knex(tableName)
         .insert(rowToInsert)
         .then(() => console.log('Add Input'))
 
@@ -21,24 +21,22 @@ module.exports = function makeDbHelpers(knex){
         if(result === 0){
           return console.log('Not Found')
         }
-        console.log('Updated Task')})
+        return console.log('Updated Task')})
     },
 
-     editUser: function(userid, updateObject){ // same thing here, we need to craft a good object on the server-side ADD TASK Id
+    editUser: function(userid, updateObject){ // same thing here, we need to craft a good object on the server-side ADD TASK Id
       knex('users')
       .where('userid', userid)
       .update(updateObject)
-      .then(() => console.log('Updated User'));
+      .then(() => {return console.log('Updated User')});
     },
-
-
 
 
     // delete input (like user) might have to be done with a cascade. Also, why would we want them to be able to delete?
     // update will be able to modify what is needed
     // delet
-    showAllTasksFromUser:function(userid){ // show all tasks from beginning
-      knex('tasks')
+    showAllTasksFromUser: function(userid){ // show all tasks from beginning
+      return  knex('tasks')
       .where(`user_id`, userid)
       .then((results) => {
         console.log(results);
@@ -46,7 +44,7 @@ module.exports = function makeDbHelpers(knex){
     },
 
     showAllActiveTasksFromUser: function(userid){
-      knex('tasks')
+      return knex('tasks')
       .where(`user_id`, userid)
       .andWhere('isComplete', true)
       .then((results) => {
@@ -54,9 +52,21 @@ module.exports = function makeDbHelpers(knex){
         return results;})
     },
 
+    isUsernameInUsers: function(username){
+      return knex('users')
+      .where('username', username)
+      .then((results) => {
+        if(results.length === 0){
+          return results;
+        }
+        throw "error";
+      })
+      .catch((error) => {throw error})
+
+    },
 
     showAllFromCategory: function(userid, category){
-      knex
+      return knex
       .select('tasks.task_name')
       .from('tasks')
       .innerJoin('users', 'users.userid', 'tasks.user_id')

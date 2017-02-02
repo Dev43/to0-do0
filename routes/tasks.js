@@ -1,18 +1,19 @@
 "use strict";
-
-const express = require('express');
-const router  = express.Router();
+const router  = require('express').Router();
 
 module.exports = (knex) => {
-  const db_helper = require('../lib/db-helpers.js')(knex);
+  const db_helper = require('./lib/db-helpers.js')(knex);
 
   router.get("/", (req, res) => {
-    knex
-      .select("*")
-      .from("tasks")
-      .then((results) => {
-        res.json(results);
-    });
+    let userid = req.body.user_id || 1;
+    db_helper.showAllTasksFromUser(userid).then((response) => {res.json(response)});
+
+  });
+
+
+  router.get("/active", (req, res) => {
+    let userid = req.body.user_id || 1;
+    db_helper.showAllActiveTasksFromUser(userid).then((response) => {res.json(response)});
   });
 
   router.post("/", (req, res) => {
@@ -25,11 +26,7 @@ module.exports = (knex) => {
     db_helper.newDbInput('tasks', taskObj);
     console.log('post to db_helper');
     res.status(200).send()
-    // knex('tasks')
-    //   .insert({task_name: req.body.task_name})
-    //   .then(()=>{
-    //     res.status(200).send();
-    //   })
+
   });
 
   return router;
