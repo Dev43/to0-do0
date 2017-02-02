@@ -5,7 +5,7 @@ module.exports = function makeDbHelpers(knex){
   return {
 
     newDbInput: function(tableName, rowToInsert ){ // made it so it can be a new user OR a new task
-      knex(tableName)
+      return knex(tableName)
         .insert(rowToInsert)
         .then(() => console.log('Add Input'))
 
@@ -32,8 +32,6 @@ module.exports = function makeDbHelpers(knex){
     },
 
 
-
-
     // delete input (like user) might have to be done with a cascade. Also, why would we want them to be able to delete?
     // update will be able to modify what is needed
     // delet
@@ -54,6 +52,17 @@ module.exports = function makeDbHelpers(knex){
         return results;})
     },
 
+    isUsernameInUsers: function(username){
+      return knex('users')
+      .where('username', username)
+      .then((results) => {if(results.length === 0){
+                throw "error"
+              }
+              return results;
+              })
+      .catch((error) => {throw error})
+
+    },
 
     showAllFromCategory: function(userid, category){
       return knex
