@@ -17,9 +17,8 @@ module.exports = (knex) => {
   router.post("/", (req, res) => {
     knex('tasks')
       .insert({task_name: req.body.task_name})
-      .then((success)=>{
-        success = 1;
-        return success;
+      .then(()=>{
+        res.status(200).send();
       })
   });
 
