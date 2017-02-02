@@ -2,11 +2,15 @@ $(() => {
   loadTasks(renderTasks);
 
   function createTaskElement (taskObj) {
-    $task = $("<p>", {
+    $task = $("<label>", {
       "class": "task",
-      "text": taskObj.task_name
+      "text": taskObj.task_name,
     });
-    $("#tasks").append($task);
+    $input = $("<input>", {
+      "class": "checkbox",
+      "value": ""
+    })
+    $("#tasks").append($task).append($input);
     return $task;
   }
 
