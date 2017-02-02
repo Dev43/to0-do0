@@ -1,4 +1,10 @@
 $(() => {
+  $("#newTask").keydown(function(e) {
+    if(e.keyCode === 13){
+      e.preventDefault();
+      newTask();
+    }
+  });
   loadTasks(renderTasks);
   console.log('app.js');
   $.ajax({

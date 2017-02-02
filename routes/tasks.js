@@ -15,11 +15,12 @@ module.exports = (knex) => {
   });
 
   router.post("/", (req, res) => {
-    console.log(req.body);
-  //   knex
-  //     .insert(req.body)
-  //     .into("tasks");
-  // });
+    knex('tasks')
+      .insert({task_name: req.body.task_name});
+      .then((success)=>{
+        success = 1;
+        return success;
+      })
   });
 
   return router;
