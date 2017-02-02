@@ -14,5 +14,13 @@ module.exports = (knex) => {
     });
   });
 
+  router.post("/", (req, res) => {
+    console.log(req.body);
+  //   knex
+  //     .insert(req.body)
+  //     .into("tasks");
+  // });
+  });
+
   return router;
 }

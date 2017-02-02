@@ -1,4 +1,6 @@
 $(() => {
+  loadTasks(renderTasks);
+  console.log('app.js');
   $.ajax({
     method: "GET",
     url: "/api/users"
@@ -6,5 +8,13 @@ $(() => {
     for(user of users) {
       $("<div>").text(user.name).appendTo($("body"));
     }
-  });;
+  });
+  $.ajax({
+    method: "GET",
+    url: "/api/tasks"
+  }).done((tasks) => {
+    for(task of tasks) {
+      $("<div>").text(tasks.task_name).appendTo($("body"));
+    }
+  });
 });
