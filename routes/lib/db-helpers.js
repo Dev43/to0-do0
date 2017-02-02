@@ -21,14 +21,14 @@ module.exports = function makeDbHelpers(knex){
         if(result === 0){
           return console.log('Not Found')
         }
-        console.log('Updated Task')})
+        return console.log('Updated Task')})
     },
 
-     editUser: function(userid, updateObject){ // same thing here, we need to craft a good object on the server-side ADD TASK Id
+    editUser: function(userid, updateObject){ // same thing here, we need to craft a good object on the server-side ADD TASK Id
       knex('users')
       .where('userid', userid)
       .update(updateObject)
-      .then(() => console.log('Updated User'));
+      .then(() => {return console.log('Updated User')});
     },
 
 

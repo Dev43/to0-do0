@@ -2,6 +2,15 @@
 
 const router  = require('express').Router();
 
+function makeUserObject(requestObject){
+  return {
+      username: requestObject.username || '@PxG',
+      first_name: requestObject.first_name || 'pat',
+      last_name: requestObject.first_name || 'dnjewd',
+      email: requestObject.email || "123@123",
+      password: requestObject.password || '1234'
+    }
+}
 
 
 
@@ -11,27 +20,32 @@ module.exports = (knex) => {
 
 
   router.get('/new_user', (req, res) => {
-
 // crafting the user-object
-    const userObj = {
-      username: req.body.username || '@PxG',
-      first_name: req.body.first_name || 'pat',
-      last_name: req.body.first_name || 'dnjewd',
-      email: req.body.email || "123@123",
-      password: req.body.password || '1234'
-     }
-
+    const userObj = makeUserObject(req.body)
+    console.log(userObj);
      // the first promise gets called to check if the username is in the databse
      db_helper.isUsernameInUsers(userObj.username)
-     .then( () => {db_helper
+     .then( () => { // the second promise gets called only if there is no username that matches in the db
+            db_helper
             .newDbInput('users', userObj)
             .then(() => {return res.send('Successfully Written!')})
             return;
             })
-     .catch((err) => {return res.send("Username Exists, please pick another one!" )}
+     .catch((err) => {return res.send("Username Exists, please pick another one!" )} // else redirect the user to a page saying it doens't exist
 );
 
   });
+
+
+  router.get('/register', (req, res) => {
+     const userObj = makeUserObject(req.body)
+     console.log(userObj);
+
+
+  });
+
+
+
 
 
 
