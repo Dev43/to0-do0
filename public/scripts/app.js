@@ -6,7 +6,6 @@ $(() => {
       "class": "task",
       "text": taskObj.task_name
     });
-    console.log('createTaskElement');
     $("#tasks").append($task);
     return $task;
   }
@@ -15,10 +14,9 @@ $(() => {
     console.log('renderTasks');
     $('#tasks').empty();
     task.forEach(function(t){
-      // console.log(t);
        $taskElem = createTaskElement(t);
-      // $prevTask = $("#tasks").first();
-      // $taskElem.insertBefore($prevTask);
+       $prevTask = $('#tasks p').first();
+       $taskElem.insertBefore($prevTask);
     });
   }
 
