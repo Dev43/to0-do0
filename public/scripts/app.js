@@ -1,18 +1,26 @@
 $(() => {
+  loadTasks(renderTasks);
+
   function createTaskElement (taskObj) {
-    $task = $("<p>", {"class": "task", "text": taskObj.task_name});
+    $task = $("<p>", {
+      "class": "task",
+      "text": taskObj.task_name
+    });
     console.log('createTaskElement');
+    $("#tasks").append($task);
     return $task;
   }
+
   function renderTasks (task) {
-    $("#tasks").empty();
     console.log('renderTasks');
     task.forEach(function(t){
-      console.log(t);
-      $taskElem = createTaskElement(t);
-      $("body").append($taskElem);
+      // console.log(t);
+      // $taskElem = createTaskElement(t);
+      // $prevTask = $("#tasks").first();
+      // $taskElem.insertBefore($prevTask);
     });
   }
+
   function loadTasks (cb) {
     console.log('loadTasks');
     $.ajax({
@@ -21,6 +29,7 @@ $(() => {
       success: cb
     });
   }
+
   function newTask () {
     console.log("newTask");
     $task = $("#newTask").serialize();
@@ -35,14 +44,14 @@ $(() => {
       }
     })
   }
+
   $("#newTask").keydown(function(e) {
     if(e.keyCode === 13){
       e.preventDefault();
       newTask();
     }
   });
-  loadTasks(renderTasks);
-  console.log('app.js');
+
   $.ajax({
     method: "GET",
     url: "/api/users"
@@ -56,7 +65,7 @@ $(() => {
     url: "/api/tasks"
   }).done((tasks) => {
     for(task of tasks) {
-      $("<div>").text(tasks.task_name).appendTo($("body"));
+      // $("<div>").text(tasks.task_name).appendTo($("body"));
     }
   });
 });
