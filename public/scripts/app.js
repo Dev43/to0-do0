@@ -2,73 +2,70 @@ $(() => {
   loadTasks(renderTasks);
 
   function createTaskElement (taskObj) {
-    $task = $("<label>", {
-      "class": "task",
-      "text": taskObj.task_name,
-    });
-    $input = $("<input>", {
-      "class": "checkbox",
-      "value": ""
+    $task = $("<li/>", {
+      "class" : "list-group-item"
     })
-    $("#tasks").append($task).append($input);
+    .append($("<div/>", {
+      "class" : "checkbox"
+    })
+      .append($("<label/>", {
+        "class" : "task_label"
+      })
+        .append($("<input/>", {
+          "type": "checkbox",
+          "value": ""
+          })
+        )
+        .append(taskObj.task_name)
+      )
+    );
+    $(".task_label")
+    $("#tasks").append($task);
     return $task;
   }
 
-  function renderTasks (task) {
-    console.log('renderTasks');
+  function renderTasks(task) {
     $('#tasks').empty();
     task.forEach(function(t){
        $taskElem = createTaskElement(t);
-       $prevTask = $('#tasks p').first();
+       $prevTask = $('#tasks li').first();
        $taskElem.insertBefore($prevTask);
     });
   }
 
-  function loadTasks (cb) {
+  function loadTasks(cb) {
     console.log('loadTasks');
     $.ajax({
-      url: '/api/tasks',
+      url: '/tasks',
       method: 'GET',
       success: cb
     });
   }
 
-  function newTask () {
-    console.log("newTask");
-    $task = $("#newTask").serialize();
-    $.ajax({
-      url: "/api/tasks",
-      data: $task,
-      method: "POST",
-      success: () => {
-        $("input").val("");
-        console.log('new task created');
-        loadTasks(renderTasks);
-      }
-    })
-  }
-
   $("#newTask").keydown(function(e) {
     if(e.keyCode === 13){
       e.preventDefault();
-      newTask();
+      console.log($("#newTask").serialize());
+      // Need to sanitize input for security purposes!!
+      $task = $("#newTask").serialize();
+      $.ajax({
+        url: "/tasks",
+        data: $task,
+        method: "POST",
+        success: () => {
+          $("#newTask input").val("");
+          console.log('new task created: '+ $task);
+          loadTasks(renderTasks);
+        }
+      })
     }
   });
 
-  // $.ajax({
-  //   method: "GET",
-  //   url: "/api/users"
-  // }).done((users) => {
-  //   for(user of users) {
-  //     //$("<div>").text(user.name).appendTo($("body"));
-  //   }
-  // });
   $.ajax({
     method: "GET",
-    url: "/api/tasks"
+    url: "/tasks"
   }).done((tasks) => {
     for(task of tasks) {
-      // $("<div>").text(tasks.task_name).appendTo($("body"));
     }
   });
 });
