@@ -1,8 +1,12 @@
 "use strict";
 
+const cookieSession = require('cookie-session');
 const router  = require('express').Router();
 
+
 function makeUserObject(requestObject){
+
+
   return {
       username: requestObject.username || '@PxG',
       first_name: requestObject.first_name || 'pat',
@@ -15,7 +19,12 @@ function makeUserObject(requestObject){
 
 
 
-module.exports = (knex) => {
+module.exports = (knex, app) => {
+
+  app.use(cookieSession({
+    name: 'session',
+    keys: ['key1', 'key2']
+  }));
   const db_helper = require('./lib/db-helpers.js')(knex);
 
 
@@ -40,10 +49,13 @@ module.exports = (knex) => {
   router.get('/register', (req, res) => {
      const userObj = makeUserObject(req.body)
      console.log(userObj);
-
-
+     // render the register view!
   });
 
+  router.post('/register', (req, res) => {
+
+
+  })
 
 
 

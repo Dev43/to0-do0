@@ -1,5 +1,4 @@
 "use strict";
-// dO we need to get all the categories for a user?
 const router  = require('express').Router();
 
 
