@@ -27,6 +27,28 @@ module.exports = (knex, app) => {
   }));
 
 
+  router.get('/', (req, res) => {
+    console.log(req.session.user_id)
+    if(!req.session.user_id){
+      return res.status(401).send("{}")
+    }
+
+    const userid = req.session.user_id;
+    db_helper.getUser('userid', userid)
+    .then((user) => {
+      return res.status(200).send(
+        JSON.stringify({
+          userid: user[0].userid,
+          first_name: user[0].first_name,
+          username: user[0].username,
+          last_name: user[0].last_name
+        })
+      );
+    })
+    .catch((err) => {res.status(500).send("Problem with the Database")})
+
+  })
+
   router.get('/register', (req, res) => {
     const userObj = makeUserObject(req.body)
     let p1 = db_helper.isUsernameInUsers//(userObj.username);
@@ -54,7 +76,7 @@ module.exports = (knex, app) => {
     const username = req.body.username || "@Pat";
     const password = req.body.password || "1234";
 
-    db_helper.getUser(username).then((user) => {
+    db_helper.getUser('username', username).then((user) => {
       if(!user.length){
         console.log("Error, your username is not valid");
         return res.status(400).end("Error, your username is not valid");
@@ -70,7 +92,6 @@ module.exports = (knex, app) => {
 
   router.get('/logout', (req, res) => {
   req.session = null;
-  // res.redirect("/");
   res.status(200).end("Successfully Logged Out!")
   return;
 });
