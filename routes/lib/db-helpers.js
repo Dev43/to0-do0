@@ -71,12 +71,12 @@ module.exports = function makeDbHelpers(knex){
       return knex('users')
       .where('username', username)
       .then((results) => {
-        if(results.length === 0){ // if empty
-          return results; // then return the empty array
+        if(results.length === 0){
+          return ""; // then return the empty array
         }
-        throw "error"; // else it is already there, throw an error
+        throw "Error, username already in Database"; // else it is already there, throw an error
       })
-      .catch((error) => {return "it didn't work " + error;})
+      .catch((error) => {console.log(error); return "Error: " + error;})
 
     },
 
