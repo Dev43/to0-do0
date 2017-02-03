@@ -73,6 +73,14 @@ module.exports = (knex, app) => {
     })
   });
 
+
+  router.get('/logout', (req, res) => {
+  req.session = null;
+  // res.redirect("/");
+  res.end("Successfully Logged Out!")
+  return;
+});
+
   return router;
 }
   // router.get("/", (req, res) => {
