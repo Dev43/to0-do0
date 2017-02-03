@@ -1,8 +1,10 @@
 "use strict";
 
 const cookieSession = require('cookie-session');
-const router  = require('express').Router();
-const bcrypt = require('bcrypt');
+const router        = require('express').Router();
+const bcrypt        = require('bcrypt');
+const auth          = require('./lib/authenticate');
+
 
 
 function makeUserObject(requestObject){
@@ -28,11 +30,9 @@ module.exports = (knex, app) => {
 
 
   router.get('/', (req, res) => {
-    console.log(req.session.user_id)
     if(!req.session.user_id){
       return res.status(401).send("{}")
     }
-
     const userid = req.session.user_id;
     db_helper.getUser('userid', userid)
     .then((user) => {
@@ -56,19 +56,20 @@ module.exports = (knex, app) => {
     let p2 = db_helper.newDbInput//('users', userObj);
     let p3 = db_helper.getUserId//(userObj.username);
 
-    p1(userObj.username).then((err) => {
-      if(err){
-       return res.status(400).send('user already in db')
-      }
-      return  p2('users', userObj).then(() => {
-        return p3(userObj.username).then((value) => {
-          req.session.user_id = value[0].userid;
-          return res.status(201).end("User created");
-
-        });
+    p1(userObj.username)
+      .then((err) => {
+        if(err){
+         return res.status(400).send('user already in db')
+        }
+        return  p2('users', userObj)
+          .then(() => {
+          return p3(userObj.username)
+            .then((value) => {
+              req.session.user_id = value[0].userid;
+              return res.status(201).end("User created");
+            });
+          });
       });
-    });
-
   });
 
   router.get('/login', (req, res) => {
@@ -89,12 +90,11 @@ module.exports = (knex, app) => {
     })
   });
 
-
   router.get('/logout', (req, res) => {
-  req.session = null;
-  res.status(200).end("Successfully Logged Out!")
-  return;
-});
+    req.session = null;
+    res.status(200).end("Successfully Logged Out!")
+    return;
+  });
 
   return router;
 }

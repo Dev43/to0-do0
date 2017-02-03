@@ -79,6 +79,14 @@ module.exports = function makeDbHelpers(knex){
         return results;})
     },
 
+    getTaskFromUser : function(taskName, userid, isComplete){
+     return knex('tasks')
+      .where('task_name', taskName)
+      .andWhere('user_id', userid)
+      .andWhere('isComplete', true)
+      .then((result) => {return result;});
+    },
+
     isUsernameInUsers: function(username){
       return knex('users')
       .where('username', username)
