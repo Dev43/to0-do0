@@ -68,6 +68,7 @@ module.exports = (knex, app) => {
       if(!bcrypt.compareSync(password, user[0].password)){
         return res.end("wrong password, try again");
       }
+       req.session.user_id = user[0].userid;
        res.end(JSON.stringify(user));
     })
   });
