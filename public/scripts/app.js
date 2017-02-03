@@ -2,12 +2,38 @@ $(() => {
   $user = loadDbItems('/users',
     (user)=>{
       return JSON.parse(user);
+    }
+  );
+
+
+
+  function login(data, cb) {
+    $.ajax({
+      url: '/users/login',
+      data: {
+        username: data.username,
+        password: data.password
+      },
+      method: "POST",
+      success: cb
+    })
+  }
+
+  $('#login-submit').on('click', function(e) {
+    data = {
+      username: $('#username').serialize(),
+      password: $('#password').serialize(),
+    }
+    login(data,()=>{
+      loadDbItems('/tasks/active', renderTasks);
     });
+  })
 
   $('body').show(1000);
   $("#taskInput").focus();
   $('.login').css("display","none");
   $('.register').css("display","none");
+  loadDbItems('/categories', renderCategories),
 
   $user ?
   (
@@ -15,6 +41,7 @@ $(() => {
     $('.login-btn').css("display","none")
   ):
   (
+    $('.logout-btn').css("display","none"),
     loadDbItems('/tasks', renderTasks),
     $('.navbar-brand').on('click', () => {
       $('.tasks').toggle();
@@ -44,7 +71,6 @@ $(() => {
       }
     })
   )
-
 
   // View rendering for tasks
   function createTaskElement(taskObj) {
@@ -89,7 +115,6 @@ $(() => {
     $(".categories").append($categorie);
     return $categorie;
   }
-
   function renderCategories(categories) {
     $('.categories').empty();
     categories.forEach(function(c){
@@ -106,19 +131,13 @@ $(() => {
       success: cb
     });
   }
-
-  function login(table, cb) {
+  function upDbItems(table, data, cb) {
     $.ajax({
       url: table,
-      data: {
-        username: "adobe",
-        password: "banansaa"
-      },
-      method: "POST",
-      success: () => {
-        console.log('credentials validated');
-      }
-    })
+      data: data,
+      method: 'POST',
+      success: cb
+    });
   }
 
   // login('/users/login');
@@ -143,11 +162,11 @@ $(() => {
     }
   });
 
-  $.ajax({
-    method: "GET",
-    url: "/tasks"
-  }).done((tasks) => {
-    for(task of tasks) {
-    }
-  });
+//   $.ajax({
+//     method: "GET",
+//     url: "/tasks"
+//   }).done((tasks) => {
+//     for(task of tasks) {
+//     }
+//   });
 });
