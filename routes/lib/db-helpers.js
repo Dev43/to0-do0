@@ -39,9 +39,9 @@ module.exports = function makeDbHelpers(knex){
     },
 
 
-    getUser: function(userid){
+    getUser: function(username){
       return knex('users')
-      .where('userid', userid)
+      .where('username', username)
       .then((result) => {
        return result;
       })

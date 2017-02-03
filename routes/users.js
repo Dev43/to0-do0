@@ -56,8 +56,21 @@ module.exports = (knex, app) => {
   });
 
   router.get('/login', (req, res) => {
+    // we will get username and password
+    const username = req.body.username || "@Pat";
+    const password = req.body.password || "1234";
 
-  })
+    db_helper.getUser(username).then((user) => {
+      if(!user.length){
+        console.log("Error, your username is not valid");
+        return res.end("Error, your username is not valid");
+      }
+      if(!bcrypt.compareSync(password, user[0].password)){
+        return res.end("wrong password, try again");
+      }
+       res.end(JSON.stringify(user));
+    })
+  });
 
   return router;
 }
