@@ -2,9 +2,13 @@
 
 const cookieSession = require('cookie-session');
 const router  = require('express').Router();
+const bcrypt = require('bcrypt');
 
 
 function makeUserObject(requestObject){
+
+  const hash = bcrypt.hashSync("1234", 10);
+  // const hash = bcrypt.hashSync(requestObject.password, 10);
 
 
   return {
@@ -12,37 +16,24 @@ function makeUserObject(requestObject){
       first_name: requestObject.first_name || 'pdqwat',
       last_name: requestObject.first_name || 'dndqjewd',
       email: requestObject.email || "1dqw23@123",
-      password: requestObject.password || '12dqw34'
+      password: hash || '12dqw34'
     }
 }
 
 
 
+
+
 module.exports = (knex, app) => {
 
-  function giveCookie(){
-
-  }
-
-
+  const db_helper = require('./lib/db-helpers.js')(knex);
   app.use(cookieSession({ // attaches propety session to req
     name: 'session',
     keys: ['key1', 'key2']
   }));
-  const db_helper = require('./lib/db-helpers.js')(knex);
-
-
-
-  // router.get('/register', (req, res) => {
-  //    const userObj = makeUserObject(req.body)
-  //    console.log(userObj);
-  //    // render the register view!
-  // });
-
 
 
   router.get('/register', (req, res) => {
-// crafting the user-object
     const userObj = makeUserObject(req.body)
     let p1 = db_helper.isUsernameInUsers//(userObj.username);
      // the first promise gets called to check if the username is in the databse
@@ -63,6 +54,10 @@ module.exports = (knex, app) => {
     });
 
   });
+
+  router.get('/login', (req, res) => {
+
+  })
 
   return router;
 }
