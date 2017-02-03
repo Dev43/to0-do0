@@ -2,75 +2,99 @@
 
 const cookieSession = require('cookie-session');
 const router  = require('express').Router();
+const bcrypt = require('bcrypt');
 
 
 function makeUserObject(requestObject){
-
-
+  const hash = bcrypt.hashSync("1234", 10);
+  // const hash = bcrypt.hashSync(requestObject.password, 10);
   return {
-      username: requestObject.username || '@PxG',
-      first_name: requestObject.first_name || 'pat',
-      last_name: requestObject.first_name || 'dnjewd',
-      email: requestObject.email || "123@123",
-      password: requestObject.password || '1234'
+      username: requestObject.username || '@Pat',
+      first_name: requestObject.first_name || 'pdqwat',
+      last_name: requestObject.first_name || 'dndqjewd',
+      email: requestObject.email || "1dqw23@123",
+      password: hash || '12dqw34'
     }
 }
 
 
-
-
 module.exports = (knex, app) => {
 
-  app.use(cookieSession({
+  const db_helper = require('./lib/db-helpers.js')(knex);
+  app.use(cookieSession({ // attaches propety session to req
     name: 'session',
     keys: ['key1', 'key2']
   }));
-  const db_helper = require('./lib/db-helpers.js')(knex);
 
 
-  router.get('/new_user', (req, res) => {
-// crafting the user-object
-    const userObj = makeUserObject(req.body)
-    console.log(userObj);
-     // the first promise gets called to check if the username is in the databse
-     db_helper.isUsernameInUsers(userObj.username)
-     .then( () => { // the second promise gets called only if there is no username that matches in the db
-            db_helper
-            .newDbInput('users', userObj)
-            .then(() => {return res.send('Successfully Written!')})
-            return;
-            })
-     .catch((err) => {return res.send("Username Exists, please pick another one!" )} // else redirect the user to a page saying it doens't exist
-);
+  router.get('/', (req, res) => {
+    console.log(req.session.user_id)
+    if(!req.session.user_id){
+      return res.status(401).send("{}")
+    }
 
-  });
-
-
-  router.get('/register', (req, res) => {
-     const userObj = makeUserObject(req.body)
-     console.log(userObj);
-     // render the register view!
-  });
-
-  router.post('/register', (req, res) => {
-
+    const userid = req.session.user_id;
+    db_helper.getUser('userid', userid)
+    .then((user) => {
+      return res.status(200).send(
+        JSON.stringify({
+          userid: user[0].userid,
+          first_name: user[0].first_name,
+          username: user[0].username,
+          last_name: user[0].last_name
+        })
+      );
+    })
+    .catch((err) => {res.status(500).send("Problem with the Database")})
 
   })
 
+  router.get('/register', (req, res) => {
+    const userObj = makeUserObject(req.body)
+    let p1 = db_helper.isUsernameInUsers//(userObj.username);
+     // the first promise gets called to check if the username is in the databse
+    let p2 = db_helper.newDbInput//('users', userObj);
+    let p3 = db_helper.getUserId//(userObj.username);
+
+    p1(userObj.username).then((err) => {
+      if(err){
+       return res.status(400).send('user already in db')
+      }
+      return  p2('users', userObj).then(() => {
+        return p3(userObj.username).then((value) => {
+          req.session.user_id = value[0].userid;
+          return res.status(201).end("User created");
+
+        });
+      });
+    });
+
+  });
+
+  router.get('/login', (req, res) => {
+    // we will get username and password
+    const username = req.body.username || "@Pat";
+    const password = req.body.password || "1234";
+
+    db_helper.getUser('username', username).then((user) => {
+      if(!user.length){
+        console.log("Error, your username is not valid");
+        return res.status(400).end("Error, your username is not valid");
+      }
+      if(!bcrypt.compareSync(password, user[0].password)){
+        return res.status(401).end("wrong password, try again");
+      }
+       req.session.user_id = user[0].userid;
+       res.end(JSON.stringify(user));
+    })
+  });
 
 
-
-
-
+  router.get('/logout', (req, res) => {
+  req.session = null;
+  res.status(200).end("Successfully Logged Out!")
+  return;
+});
 
   return router;
 }
-  // router.get("/", (req, res) => {
-  //   knex
-  //     .select("*")
-  //     .from("users")
-  //     .then((results) => {
-  //       res.json(results);
-  //   });
-  // }); NOT NEEDED, when does a person want to get all the users from our db?
-
