@@ -6,16 +6,47 @@ $(() => {
 
   $('body').show(1000);
   $("#taskInput").focus();
+  $('.login').css("display","none");
+  $('.register').css("display","none");
 
   $user ?
   (
-    loadDbItems('/categories', renderCategories),
+    $('.register-btn').css("display","none"),
+    $('.login-btn').css("display","none")
+  ):
+  (
     loadDbItems('/tasks', renderTasks),
-  ):(
-    $('.signin').addClass('active'),
-    $('.login').addClass('active')
+    $('.navbar-brand').on('click', () => {
+      $('.tasks').toggle();
+      if($('.login').is(':visible')){
+        $('.login').toggle()
+      }
+      if($('.register').is(':visible')){
+        $('.register').toggle()
+      }
+    }),
+    $('.login-btn').on('click', () => {
+      $('.login').toggle();
+      if($('.tasks').is(':visible')){
+        $('.tasks').toggle()
+      }
+      if($('.register').is(':visible')){
+        $('.register').toggle()
+      }
+    }),
+    $('.register-btn').on('click', () => {
+      $('.register').toggle()
+      if($('.tasks').is(':visible')){
+        $('.tasks').toggle()
+      }
+      if($('.login').is(':visible')){
+        $('.login').toggle()
+      }
+    })
   )
-// View rendering for tasks
+
+
+  // View rendering for tasks
   function createTaskElement(taskObj) {
     $task = $("<li/>", {
       "class" : "list-group-item"
@@ -76,18 +107,13 @@ $(() => {
     });
   }
 
-  function loadDbItems(table, cb) {
-    $.ajax({
-      url: table,
-      method: 'GET',
-      success: cb
-    });
-  }
-
   function login(table, cb) {
     $.ajax({
       url: table,
-      data: '',
+      data: {
+        username: "adobe",
+        password: "banansaa"
+      },
       method: "POST",
       success: () => {
         console.log('credentials validated');
@@ -95,7 +121,7 @@ $(() => {
     })
   }
 
-  login('/users/login');
+  // login('/users/login');
   // logout('/users/login')
   // register('/users/login')
 

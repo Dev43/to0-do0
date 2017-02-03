@@ -30,7 +30,7 @@ module.exports = (knex, app) => {
   router.get('/', (req, res) => {
     console.log(req.session.user_id)
     if(!req.session.user_id){
-      return res.status(401).send("{}")
+      return res.status(201).send("{}")
     }
 
     const userid = req.session.user_id;
