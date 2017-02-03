@@ -19,15 +19,16 @@ $(() => {
     })
   }
 
-  $('#login-submit').on('click', function(e) {
+  // $('#login-submit').on('click', function(e) {
     data = {
       username: $('#username').serialize(),
       password: $('#password').serialize(),
     }
-    login(data,()=>{
+    login(data,(response)=>{
+      console.log(response);
       loadDbItems('/tasks/active', renderTasks);
     });
-  })
+  // })
 
   $('body').show(1000);
   $("#taskInput").focus();
