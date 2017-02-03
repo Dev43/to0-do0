@@ -1,10 +1,20 @@
 $(() => {
+  $user = loadDbItems('/users',
+    (user)=>{
+      return JSON.parse(user);
+    });
+
   $('body').show(1000);
   $("#taskInput").focus();
-  loadDbItems('/categories', renderCategories);
-  loadDbItems('/tasks', renderTasks);
 
-
+  $user ?
+  (
+    loadDbItems('/categories', renderCategories),
+    loadDbItems('/tasks', renderTasks),
+  ):(
+    $('.signin').addClass('active'),
+    $('.login').addClass('active')
+  )
 // View rendering for tasks
   function createTaskElement(taskObj) {
     $task = $("<li/>", {
@@ -23,23 +33,8 @@ $(() => {
         )
         .append(taskObj.task_name)
       )
-    ).append($("<button/>", {
-      "class":"btn btn-primary",
-      "data-toggle": "modal",
-      "data-target": "#"+taskObj.taskid+"Modal"
-    }));
+    );
     $("#tasks").append($task);
-    $("#tasks")
-    return $task;
-  }
-  function createTaskModal(taskObj) {
-    ('body').append($("<button/>", {
-      "class":"btn btn-primary",
-      "data-toggle": "modal",
-      "data-target": "#"+taskObj.taskid+"Modal"
-    }));
-    $("#tasks").append($task);
-    $("#tasks")
     return $task;
   }
   function renderTasks(tasks) {
@@ -47,7 +42,6 @@ $(() => {
     tasks.forEach(function(t){
       console.log(t);
       $taskElem = createTaskElement(t);
-      $taskElem = createTaskModal(t);
       $prevTask = $('#tasks li').first();
       $taskElem.insertBefore($prevTask);
     });
@@ -81,6 +75,29 @@ $(() => {
       success: cb
     });
   }
+
+  function loadDbItems(table, cb) {
+    $.ajax({
+      url: table,
+      method: 'GET',
+      success: cb
+    });
+  }
+
+  function login(table, cb) {
+    $.ajax({
+      url: table,
+      data: '',
+      method: "POST",
+      success: () => {
+        console.log('credentials validated');
+      }
+    })
+  }
+
+  login('/users/login');
+  // logout('/users/login')
+  // register('/users/login')
 
   $("#newTask").keydown(function(e) {
     if(e.keyCode === 13){

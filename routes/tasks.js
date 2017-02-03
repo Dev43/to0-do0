@@ -7,7 +7,6 @@ module.exports = (knex) => {
   router.get("/", (req, res) => {
     let userid = req.body.user_id || 1;
     db_helper.showAllTasksFromUser(userid).then((response) => {res.json(response)});
-
   });
 
 
