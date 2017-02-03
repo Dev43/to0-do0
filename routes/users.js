@@ -51,19 +51,24 @@ module.exports = (knex, app) => {
   router.get('/register', (req, res) => {
 // crafting the user-object
     const userObj = makeUserObject(req.body)
+    let p1 = db_helper.isUsernameInUsers//(userObj.username);
      // the first promise gets called to check if the username is in the databse
-    let p1 = db_helper.isUsernameInUsers(userObj.username);
-    let p2 = db_helper.newDbInput('users', userObj);
-    let p3 = db_helper.getUserId(userObj.username);
+    let p2 = db_helper.newDbInput//('users', userObj);
+    let p3 = db_helper.getUserId//(userObj.username);
+
+p1(userObj.username).then((value) => {console.log(value)});
+p2('users', userObj).then((value) => {console.log(value)});
+p3(userObj.username).then((value) => {console.log(value)});
 
      // .then( insertIntoDb(userObj, res))
      // .catch((err) => {return res.send("Username Exists, please pick another one!" )}) // else redirect the user to a page saying it doens't exist
      // .then(() => {db_helper.getUserId(userObj.username)});
 
-     Promise
-     .resolve(p1)
-     .then(p2)
-     .then(p3);
+     // Promise
+     // .resolve(userObj)
+     // .then((value) => {return p1(value)})
+     // .catch((err) => {console.log})
+     // .then((value) => console.log);
 
 
   res.end()

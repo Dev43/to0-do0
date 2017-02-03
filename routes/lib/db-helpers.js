@@ -11,8 +11,15 @@ module.exports = function makeDbHelpers(knex){
 
     },
 
-    editTask: function(userid, taskId, updateObject){ // same thing here, we need to craft a good object on the server-side ADD TASK Id
+    newUserInput: function(tableName, rowToInsert ){ // made it so it can be a new user OR a new task
+      return knex('users')
+        .insert(rowToInsert)
+        .then(() => { console.log('Add Input'); return})
 
+    },
+
+    editTask: function(userid, taskId, updateObject){ // same thing here, we need to craft a good object on the server-side ADD TASK Id
+      return
       knex('tasks')
       .where('user_id', userid)
       .andWhere('tasks.taskid', taskId)
@@ -25,7 +32,7 @@ module.exports = function makeDbHelpers(knex){
     },
 
     editUser: function(userid, updateObject){ // same thing here, we need to craft a good object on the server-side ADD TASK Id
-      knex('users')
+      return knex('users')
       .where('userid', userid)
       .update(updateObject)
       .then(() => { console.log('Updated User'); return});
@@ -36,7 +43,8 @@ module.exports = function makeDbHelpers(knex){
       .select('userid')
       .from('users')
       .where('username', username)
-      .then((result) => {console.log(result); return})
+      .then((result) => {//console.log(result);
+       return result})
       .catch((err) => {return err});
     },
     // delete input (like user) might have to be done with a cascade. Also, why would we want them to be able to delete?
@@ -63,13 +71,12 @@ module.exports = function makeDbHelpers(knex){
       return knex('users')
       .where('username', username)
       .then((results) => {
-        if(results.length === 0){
-          return results;
+        if(results.length === 0){ // if empty
+          return results; // then return the empty array
         }
-        throw "error";
-        return;
+        throw "error"; // else it is already there, throw an error
       })
-      .catch((error) => {throw error; return})
+      .catch((error) => {return "it didn't work " + error;})
 
     },
 
