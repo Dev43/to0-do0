@@ -7,12 +7,19 @@ module.exports = function makeDbHelpers(knex){
     newDbInput: function(tableName, rowToInsert ){ // made it so it can be a new user OR a new task
       return knex(tableName)
         .insert(rowToInsert)
-        .then(() => console.log('Add Input'))
+        .then(() => { console.log('Add Input'); return})
+
+    },
+
+    newUserInput: function(tableName, rowToInsert ){ // made it so it can be a new user OR a new task
+      return knex('users')
+        .insert(rowToInsert)
+        .then(() => { console.log('Add Input'); return})
 
     },
 
     editTask: function(userid, taskId, updateObject){ // same thing here, we need to craft a good object on the server-side ADD TASK Id
-
+      return
       knex('tasks')
       .where('user_id', userid)
       .andWhere('tasks.taskid', taskId)
@@ -25,10 +32,30 @@ module.exports = function makeDbHelpers(knex){
     },
 
     editUser: function(userid, updateObject){ // same thing here, we need to craft a good object on the server-side ADD TASK Id
-      knex('users')
+      return knex('users')
       .where('userid', userid)
       .update(updateObject)
-      .then(() => {return console.log('Updated User')});
+      .then(() => { console.log('Updated User'); return});
+    },
+
+
+    getUser: function(column, value){
+      return knex('users')
+      .where(column, value)
+      .then((result) => {
+       return result;
+      })
+      .catch((err) => {return err});
+    },
+
+    getUserId: function(username){
+      return knex
+      .select('userid')
+      .from('users')
+      .where('username', username)
+      .then((result) => {//console.log(result);
+       return result})
+      .catch((err) => {return err});
     },
 
 
@@ -57,11 +84,11 @@ module.exports = function makeDbHelpers(knex){
       .where('username', username)
       .then((results) => {
         if(results.length === 0){
-          return results;
+          return ""; // then return the empty array
         }
-        throw "error";
+        throw "Error, username already in Database"; // else it is already there, throw an error
       })
-      .catch((error) => {throw error})
+      .catch((error) => {console.log(error); return "Error: " + error;})
 
     },
 
