@@ -1,11 +1,51 @@
 $(() => {
-  $user = loadDbItems('/users',
-    (user)=>{
-      return JSON.parse(user);
-    }
-  );
+  loadDbItems('/users',(response)=>{
+    response === {} ? isLogged(false) : isLogged(true)
+  })
+  function isLogged(user){
+    user ? (
+      $('.register-btn').css("display","none"),
+      $('.login-btn').css("display","none")
+    ):(
+      $('.logout-btn').css("display","none"),
+      loadDbItems('/tasks', renderTasks),
+      $('.navbar-brand').on('click', () => {
+        $('.tasks').toggle();
+        if($('.login').is(':visible')){
+          $('.login').toggle()
+        }
+        if($('.register').is(':visible')){
+          $('.register').toggle()
+        }
+      }),
+      $('.login-btn').on('click', () => {
+        $('.login').toggle();
+        if($('.tasks').is(':visible')){
+          $('.tasks').toggle()
+        }
+        if($('.register').is(':visible')){
+          $('.register').toggle()
+        }
+      }),
+      $('.register-btn').on('click', () => {
+        $('.register').toggle()
+        if($('.tasks').is(':visible')){
+          $('.tasks').toggle()
+        }
+        if($('.login').is(':visible')){
+          $('.login').toggle()
+        }
+      })
+    )
+  }
 
-
+  function loadDbItems(table, cb) {
+    $.ajax({
+      url: table,
+      method: 'GET',
+      success: cb
+    });
+  }
 
   function login(data, cb) {
     $.ajax({
@@ -18,60 +58,26 @@ $(() => {
       success: cb
     })
   }
-
-  // $('#login-submit').on('click', function(e) {
+// console.log($('#login-submit'));
+  $('#login-form').on('sumbit', '#login-submit', function(e) {
+    console.log('click');
     data = {
       username: $('#username').serialize(),
       password: $('#password').serialize(),
     }
     login(data,(response)=>{
-      console.log(response);
+      $user = JSON.parse(response);
+      console.log($user);
+      isLogged($user);
       loadDbItems('/tasks/active', renderTasks);
     });
-  // })
+  })
 
   $('body').show(1000);
   $("#taskInput").focus();
   $('.login').css("display","none");
   $('.register').css("display","none");
-  loadDbItems('/categories', renderCategories),
-
-  $user ?
-  (
-    $('.register-btn').css("display","none"),
-    $('.login-btn').css("display","none")
-  ):
-  (
-    $('.logout-btn').css("display","none"),
-    loadDbItems('/tasks', renderTasks),
-    $('.navbar-brand').on('click', () => {
-      $('.tasks').toggle();
-      if($('.login').is(':visible')){
-        $('.login').toggle()
-      }
-      if($('.register').is(':visible')){
-        $('.register').toggle()
-      }
-    }),
-    $('.login-btn').on('click', () => {
-      $('.login').toggle();
-      if($('.tasks').is(':visible')){
-        $('.tasks').toggle()
-      }
-      if($('.register').is(':visible')){
-        $('.register').toggle()
-      }
-    }),
-    $('.register-btn').on('click', () => {
-      $('.register').toggle()
-      if($('.tasks').is(':visible')){
-        $('.tasks').toggle()
-      }
-      if($('.login').is(':visible')){
-        $('.login').toggle()
-      }
-    })
-  )
+  loadDbItems('/categories', renderCategories);
 
   // View rendering for tasks
   function createTaskElement(taskObj) {
@@ -97,12 +103,16 @@ $(() => {
   }
   function renderTasks(tasks) {
     $('#tasks').empty();
-    tasks.forEach(function(t){
-      console.log(t);
-      $taskElem = createTaskElement(t);
-      $prevTask = $('#tasks li').first();
-      $taskElem.insertBefore($prevTask);
-    });
+    tasks ?
+      (tasks.forEach((t) => {
+        console.log(t);
+        $taskElem = createTaskElement(t);
+        $prevTask = $('#tasks li').first();
+        $taskElem.insertBefore($prevTask);
+      })
+    ):(
+      console.log('no tasks')
+    )
   }
 
 // View rendering for categories
@@ -125,13 +135,6 @@ $(() => {
     });
   }
 
-  function loadDbItems(table, cb) {
-    $.ajax({
-      url: table,
-      method: 'GET',
-      success: cb
-    });
-  }
   function upDbItems(table, data, cb) {
     $.ajax({
       url: table,
@@ -151,7 +154,7 @@ $(() => {
       console.log($("#newTask").serialize());
       $task = $("#newTask").serialize();
       $.ajax({
-        url: "/tasks",
+        url: "/tasks/new",
         data: $task,
         method: "POST",
         success: () => {
@@ -162,12 +165,4 @@ $(() => {
       })
     }
   });
-
-//   $.ajax({
-//     method: "GET",
-//     url: "/tasks"
-//   }).done((tasks) => {
-//     for(task of tasks) {
-//     }
-//   });
 });

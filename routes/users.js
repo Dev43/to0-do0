@@ -86,7 +86,14 @@ module.exports = (knex, app) => {
         return res.status(401).end("wrong password, try again");
       }
        req.session.user_id = user[0].userid;
-       res.end(JSON.stringify(user));
+       res.send(
+         JSON.stringify({
+           userid: user[0].userid,
+           first_name: user[0].first_name,
+           username: user[0].username,
+           last_name: user[0].last_name
+        })
+      );
     })
   });
 

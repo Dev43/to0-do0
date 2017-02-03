@@ -17,7 +17,7 @@ module.exports = (knex) => {
     db_helper.showAllActiveTasksFromUser(userid).then((response) => {res.json(response)});
   });
 
-  router.get("/new", (req, res) => {
+  router.post("/new", (req, res) => {
     let userid = auth(req, res);
     const taskObj = {
       user_id: userid || 3,
