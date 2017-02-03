@@ -20,19 +20,12 @@ function makeUserObject(requestObject){
 
 module.exports = (knex, app) => {
 
-  function insertIntoDb(userObj, res){
-
-    return;
-  }
-
-
-
   function giveCookie(){
 
   }
 
 
-  app.use(cookieSession({
+  app.use(cookieSession({ // attaches propety session to req
     name: 'session',
     keys: ['key1', 'key2']
   }));
@@ -62,6 +55,7 @@ module.exports = (knex, app) => {
       }
       return  p2('users', userObj).then(() => {
         return p3(userObj.username).then((value) => {
+          req.session.user_id = value[0].userid;
           return res.end();
 
         });
