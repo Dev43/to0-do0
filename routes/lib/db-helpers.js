@@ -31,7 +31,13 @@ module.exports = function makeDbHelpers(knex){
       .then(() => {return console.log('Updated User')});
     },
 
-
+    getUserId: function(username){
+      return knex
+      .select('userid')
+      .from('users')
+      .where('username', username)
+      .then((result) => {console.log(result)});
+    },
     // delete input (like user) might have to be done with a cascade. Also, why would we want them to be able to delete?
     // update will be able to modify what is needed
     // delet
