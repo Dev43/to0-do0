@@ -23,8 +23,23 @@ $(() => {
         )
         .append(taskObj.task_name)
       )
-    );
+    ).append($("<button/>", {
+      "class":"btn btn-primary",
+      "data-toggle": "modal",
+      "data-target": "#"+taskObj.taskid+"Modal"
+    }));
     $("#tasks").append($task);
+    $("#tasks")
+    return $task;
+  }
+  function createTaskModal(taskObj) {
+    ('body').append($("<button/>", {
+      "class":"btn btn-primary",
+      "data-toggle": "modal",
+      "data-target": "#"+taskObj.taskid+"Modal"
+    }));
+    $("#tasks").append($task);
+    $("#tasks")
     return $task;
   }
   function renderTasks(tasks) {
@@ -32,6 +47,7 @@ $(() => {
     tasks.forEach(function(t){
       console.log(t);
       $taskElem = createTaskElement(t);
+      $taskElem = createTaskModal(t);
       $prevTask = $('#tasks li').first();
       $taskElem.insertBefore($prevTask);
     });
