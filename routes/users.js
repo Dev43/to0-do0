@@ -6,11 +6,8 @@ const bcrypt = require('bcrypt');
 
 
 function makeUserObject(requestObject){
-
   const hash = bcrypt.hashSync("1234", 10);
   // const hash = bcrypt.hashSync(requestObject.password, 10);
-
-
   return {
       username: requestObject.username || '@Pat',
       first_name: requestObject.first_name || 'pdqwat',
@@ -19,9 +16,6 @@ function makeUserObject(requestObject){
       password: hash || '12dqw34'
     }
 }
-
-
-
 
 
 module.exports = (knex, app) => {
@@ -42,12 +36,12 @@ module.exports = (knex, app) => {
 
     p1(userObj.username).then((err) => {
       if(err){
-       return res.send('user already in db')
+       return res.status(400).send('user already in db')
       }
       return  p2('users', userObj).then(() => {
         return p3(userObj.username).then((value) => {
           req.session.user_id = value[0].userid;
-          return res.end();
+          return res.status(201).end("User created");
 
         });
       });
@@ -63,10 +57,10 @@ module.exports = (knex, app) => {
     db_helper.getUser(username).then((user) => {
       if(!user.length){
         console.log("Error, your username is not valid");
-        return res.end("Error, your username is not valid");
+        return res.status(400).end("Error, your username is not valid");
       }
       if(!bcrypt.compareSync(password, user[0].password)){
-        return res.end("wrong password, try again");
+        return res.status(401).end("wrong password, try again");
       }
        req.session.user_id = user[0].userid;
        res.end(JSON.stringify(user));
@@ -77,19 +71,9 @@ module.exports = (knex, app) => {
   router.get('/logout', (req, res) => {
   req.session = null;
   // res.redirect("/");
-  res.end("Successfully Logged Out!")
+  res.status(200).end("Successfully Logged Out!")
   return;
 });
 
   return router;
 }
-  // router.get("/", (req, res) => {
-  //   knex
-  //     .select("*")
-  //     .from("users")
-  //     .then((results) => {
-  //       res.json(results);
-  //   });
-  // }); NOT NEEDED, when does a person want to get all the users from our db?
-
-
