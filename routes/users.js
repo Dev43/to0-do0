@@ -21,9 +21,7 @@ function makeUserObject(requestObject){
 module.exports = (knex, app) => {
 
   function insertIntoDb(userObj, res){
-    db_helper
-    .newDbInput('users', userObj)
-    .then(() => {return res.send('Successfully Written!')})
+
     return;
   }
 
@@ -54,16 +52,23 @@ module.exports = (knex, app) => {
 // crafting the user-object
     const userObj = makeUserObject(req.body)
      // the first promise gets called to check if the username is in the databse
-     db_helper
-     .isUsernameInUsers(userObj.username)
-     .then( insertIntoDb(userObj, res))
-     .catch((err) => {return res.send("Username Exists, please pick another one!" )}) // else redirect the user to a page saying it doens't exist
-     .then(() => {db_helper.getUserId(userObj.username)});
+    let p1 = db_helper.isUsernameInUsers(userObj.username);
+    let p2 = db_helper.newDbInput('users', userObj);
+    let p3 = db_helper.getUserId(userObj.username);
+
+     // .then( insertIntoDb(userObj, res))
+     // .catch((err) => {return res.send("Username Exists, please pick another one!" )}) // else redirect the user to a page saying it doens't exist
+     // .then(() => {db_helper.getUserId(userObj.username)});
+
+     Promise
+     .resolve(p1)
+     .then(p2)
+     .then(p3);
 
 
-  });
+  res.end()
 
-
+});
 
 
 
