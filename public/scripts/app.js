@@ -66,6 +66,29 @@ $(() => {
     });
   }
 
+  function loadDbItems(table, cb) {
+    $.ajax({
+      url: table,
+      method: 'GET',
+      success: cb
+    });
+  }
+
+  function login(table, cb) {
+    $.ajax({
+      url: table,
+      data: '',
+      method: "POST",
+      success: () => {
+        console.log('credentials validated');
+      }
+    })
+  }
+
+  login('/users/login');
+  // logout('/users/login')
+  // register('/users/login')
+
   $("#newTask").keydown(function(e) {
     if(e.keyCode === 13){
       e.preventDefault();
