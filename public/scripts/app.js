@@ -1,9 +1,12 @@
 $(() => {
+  $('body').show(1000);
   $("#taskInput").focus();
+  loadDbItems('/categories', renderCategories);
+  loadDbItems('/tasks', renderTasks);
 
-  loadTasks(renderTasks);
 
-  function createTaskElement (taskObj) {
+// View rendering for tasks
+  function createTaskElement(taskObj) {
     $task = $("<li/>", {
       "class" : "list-group-item"
     })
@@ -21,14 +24,12 @@ $(() => {
         .append(taskObj.task_name)
       )
     );
-    $(".task_label")
     $("#tasks").append($task);
     return $task;
   }
-
-  function renderTasks(task) {
+  function renderTasks(tasks) {
     $('#tasks').empty();
-    task.forEach(function(t){
+    tasks.forEach(function(t){
       console.log(t);
       $taskElem = createTaskElement(t);
       $prevTask = $('#tasks li').first();
@@ -36,9 +37,30 @@ $(() => {
     });
   }
 
-  function loadTasks(cb) {
+// View rendering for categories
+  function createCategorieElement (categorieObj) {
+    $categorie = $("<li/>", {
+    })
+      .append($("<a/>", {
+        "href" : "#"
+      }).append(categorieObj.category_name)
+    );
+    $(".categories").append($categorie);
+    return $categorie;
+  }
+
+  function renderCategories(categories) {
+    $('.categories').empty();
+    categories.forEach(function(c){
+      console.log(c);
+      $catElem = createCategorieElement(c)
+      $('.categories').append($catElem);
+    });
+  }
+
+  function loadDbItems(table, cb) {
     $.ajax({
-      url: '/tasks',
+      url: table,
       method: 'GET',
       success: cb
     });
@@ -56,7 +78,7 @@ $(() => {
         success: () => {
           $("#newTask input").val("");
           console.log('new task created: '+ $task);
-          loadTasks(renderTasks);
+          loadDbItems('/tasks', renderTasks);
         }
       })
     }
