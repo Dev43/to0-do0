@@ -1,13 +1,26 @@
 $(() => {
+  // Helper functions for getting and posting data to DB
+  function upDbItems(route, data, cb) {
+    $.ajax({
+      url: route,
+      data: data,
+      method: 'POST',
+      success: cb
+    });
+  }
+  function loadDbItems(route, cb) {
+    $.ajax({
+      url: route,
+      method: 'GET',
+      success: cb
+    });
+  }
+
+  // Empty arrays and objects for logged out usage of app
   $arr = [];
   $user = {};
-  loadDbItems('/users/',(response)=>{
-    $user = response;
-    console.log($user);
-    $('body').show(1000);
-    isLogged($user);
-  });
 
+  // Show and hide page items according to if user is logged in or not
   function isLogged(usr){
     $user = usr;
     $('.main').hide();
@@ -17,6 +30,7 @@ $(() => {
       loadDbItems('/categories', renderCategories);
       loadDbItems('/tasks/active', renderTasks);
       $('#newTask').show();
+      $("#taskInput").focus();
       $('.tasks').show();
       $('.logout-btn').show();
       $('.register-btn').hide();
@@ -64,23 +78,14 @@ $(() => {
     }
   }
 
-  function upDbItems(route, data, cb) {
-    $.ajax({
-      url: route,
-      data: data,
-      method: 'POST',
-      success: cb
-    });
-  }
-  function loadDbItems(route, cb) {
-    $.ajax({
-      url: route,
-      method: 'GET',
-      success: cb
-    });
-  }
+  // First get request to server
+  loadDbItems('/users/',(response)=>{
+    $user = response;
+    console.log($user);
+    $('body').show(1000);
+    isLogged($user);
+  });
 
-  $("#taskInput").focus();
   $('#login-submit').on('click', (e) => {
     e.preventDefault();
     data = $('#login-form').serialize();
@@ -111,6 +116,13 @@ $(() => {
       isLogged(false);
     })
   })
+  $('.logout-btn').on('click', ()=>{
+    upDbItems('/users/logout', "logmeoutplz", () => {
+      $('.main').hide();
+      $('.login').show();
+      isLogged(false);
+    })
+  })
 
   // View rendering for tasks
   function createTaskElement(taskObj) {
@@ -125,6 +137,7 @@ $(() => {
       })
         .append($("<input/>", {
           "type": "checkbox",
+          "id": taskObj.taskid,
           "value": ""
           })
         )
