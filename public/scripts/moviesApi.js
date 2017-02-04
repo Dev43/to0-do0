@@ -72,10 +72,7 @@ $.ajax(createSettings(search, theQuery, "")).done(function (moviesOrTvShows) {
       console.log(movie);
 
 
-      let genreObj = movie.genres;
-      let title = movie.original_title;
-      let rating = movie.vote_average;
-      let overview = movie.overview
+
 
       let movieInfo = {
        genreObj: movie.genres,
