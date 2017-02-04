@@ -69,7 +69,7 @@ module.exports = (knex, app) => {
           return p3(userObj.username)
             .then((value) => {
               req.session.user_id = value[0].userid;
-              return res.status(201).end('1');
+              return res.status(201).send(1);
             });
           });
       });
@@ -79,15 +79,17 @@ module.exports = (knex, app) => {
     // we will get username and password
     const username = req.body.username || "@Pat";
     const password = req.body.password || "1234";
+    console.log(req.body);
 
     db_helper.getUser('username', username).then((user) => {
       if(!user.length){
-        console.log("Error, your username is not valid");
         // return res.status(400).end("Error, your username is not valid");
+        console.log('404');
         return 0;
       }
       if(!bcrypt.compareSync(password, user[0].password)){
         // return res.status(401).end("wrong password, try again");
+        console.log('PSK');
         return 0;
       }
        req.session.user_id = user[0].userid;

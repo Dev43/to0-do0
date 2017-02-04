@@ -11,10 +11,12 @@ $(() => {
   });
 
   function isLogged(user){
+    $('.main').hide();
     // debugger;
-    console.log(user);
     user ? (
       loadDbItems('/tasks/active', renderTasks),
+      $('.newTask').show(),
+      $('.tasks').show(),
       $('.logout-btn').show(),
       $('.register-btn').hide(),
       $('.login-btn').hide()
@@ -77,36 +79,33 @@ $(() => {
 
   $('body').show(1000);
   $("#taskInput").focus();
-  $('#login-form').submit( (e) => {
+  $('#login-submit').on('click', (e) => {
     e.preventDefault();
-    $('#bs-example-navbar-collapse-1').collapse('toggle');
-    data = {
-      username: $('#username').serialize(),
-      password: $('#password').serialize(),
-    }
+    data = $('#login-form').serialize();
+    console.log(data);
     upDbItems('/users/login',data,(response)=>{
-      $user = JSON.parse(response);
-      $('.tasks').toggle();
-      if( $('.login').is(':visible') ){
-        $('.login').toggle();
-      }
-      isLogged($user);
+      // $user = JSON.parse(response);
+      isLogged(response);
     });
+    $('.tasks').toggle();
+    if( $('.login').is(':visible') ){
+      $('#bs-example-navbar-collapse-1').collapse('toggle');
+    }
   })
   $('#register-submit').on('click', (e) => {
     e.preventDefault();
-    $('#bs-example-navbar-collapse-1').collapse('toggle');
     data = $('#register-form').serialize();
+    console.log(data);
     upDbItems('/users/register',data,(response)=>{
-      console.log(response);
-      isLogged(response);
-      $('.register').toggle();
-      $('.tasks').toggle();
+      if(response){
+        isLogged(true);
+      }
+      $('#bs-example-navbar-collapse-1').collapse('toggle');
     });
   })
   $('.logout-btn').on('click', ()=>{
     upDbItems('/users/logout', "logmeoutplz", () => {
-      $('.main').css('display','none');
+      $('.main').hide();
       $('.login').show();
       isLogged(false);
     })
