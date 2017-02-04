@@ -59,7 +59,7 @@ function createSettings(method, query, id){
     "url": makeQuery(method, query, id),
     "method": "GET",
     "headers": {},
-    "data": "{}"
+
   }
 }
 
