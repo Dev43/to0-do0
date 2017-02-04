@@ -82,7 +82,7 @@ module.exports = (knex, app) => {
       });
   });
 
-  router.post('/login', (req, res) => {
+  router.get('/login', (req, res) => {
     // we will get username and password
     const username = req.body.username || "@Pat";
     const password = req.body.password || "1234";
