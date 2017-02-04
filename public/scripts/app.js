@@ -86,42 +86,6 @@ $(() => {
     isLogged($user);
   });
 
-  $('#login-submit').on('click', (e) => {
-    e.preventDefault();
-    data = $('#login-form').serialize();
-    console.log(data);
-    upDbItems('/users/login',data,(response)=>{
-      // $user = JSON.parse(response);
-      isLogged(JSON.parse(response));
-    });
-  })
-  $('#register-submit').on('click', (e) => {
-    e.preventDefault();
-    data = $('#register-form').serialize();
-    upDbItems('/users/register',data ,(response)=>{
-      console.log(response);
-      // $.when(response).done( () => {
-      //   $user = response;
-      //   console.log($user);
-      //   $('.main').hide();
-      isLogged(JSON.parse(response));
-      // })
-      $('#bs-example-navbar-collapse-1').collapse('toggle');
-    });
-  })
-  $('.logout-btn').on('click', ()=>{
-    upDbItems('/users/logout', "logmeoutplz", () => {
-      $('.main').hide();
-      $('.login').show();
-      isLogged(false);
-    })
-  })
-  $('.task-checkbox').on('click', ()=>{
-    upDbItems('/tasks/check', "", () => {
-      console.log('check');
-    })
-  })
-
   // View rendering for tasks with GET to DB
   function createTaskElement(taskObj) {
     $task = $("<li/>", {
@@ -134,10 +98,11 @@ $(() => {
         "class" : "task_label"
       })
         .append($("<input/>", {
+          "name": taskObj.task_name,
           "class": 'task-checkbox',
           "type": "checkbox",
-          "id": taskObj.taskid,
-          "value": ""
+          "checked": taskObj.isComplete,
+          "id": taskObj.taskid
           })
         )
         .append(taskObj.task_name)
@@ -190,4 +155,46 @@ $(() => {
       });
     }
   });
+  $('#login-submit').on('click', (e) => {
+    e.preventDefault();
+    data = $('#login-form').serialize();
+    console.log(data);
+    upDbItems('/users/login',data,(response)=>{
+      // $user = JSON.parse(response);
+      isLogged(JSON.parse(response));
+    });
+  })
+  $('#register-submit').on('click', (e) => {
+    e.preventDefault();
+    data = $('#register-form').serialize();
+    upDbItems('/users/register',data ,(response)=>{
+      console.log(response);
+      // $.when(response).done( () => {
+      //   $user = response;
+      //   console.log($user);
+      //   $('.main').hide();
+      isLogged(JSON.parse(response));
+      // })
+      $('#bs-example-navbar-collapse-1').collapse('toggle');
+    });
+  })
+  $('.logout-btn').on('click', ()=>{
+    e.preventDefault();
+    upDbItems('/users/logout', "logmeoutplz", () => {
+      $('.main').hide();
+      $('.login').show();
+      isLogged(false);
+    })
+  })
+  $('ul#tasks').on('click', 'li>div>label>input.task-checkbox', (e) => {
+    console.log(e.target);
+    $task = {
+      taskid : e.target.id,
+      isComplete : e.target.checked
+    };
+    console.log($task);
+    upDbItems('/tasks/edit', $task, () => {
+      e.target.value
+    })
+  })
 });

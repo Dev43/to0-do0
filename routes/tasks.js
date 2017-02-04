@@ -14,7 +14,10 @@ module.exports = (knex) => {
   router.get("/active", (req, res) => {
     let userid = auth(req, res);
     console.log(userid);
-    db_helper.showAllActiveTasksFromUser(userid).then((response) => {res.json(response)});
+    db_helper.showAllActiveTasksFromUser(userid)
+    .then((response) => {
+      res.json(response)
+    })
   });
 
   router.post("/new", (req, res) => {
@@ -22,8 +25,8 @@ module.exports = (knex) => {
     const taskObj = {
       user_id: userid || 3,
       task_name: req.body.task_name || 'taskInactive',
-      category_id: req.body.category_id || 2,
-      isComplete: req.body.isComplete || true
+      category_id: req.body.category_id,
+      isComplete: req.body.isComplete
     };
 
     db_helper.getTaskFromUser(taskObj.task_name, taskObj.user_id, taskObj.isComplete)
@@ -39,8 +42,19 @@ module.exports = (knex) => {
 
   });
 
-  router.post("/check", (req, res) => {
+  router.post("/edit", (req, res) => {
+    const taskObj = {
+      taskid : req.body.taskid,
+      isComplete : req.body.isComplete
+    }
     console.log(req.body);
+    console.log(taskObj.isComplete);
+    // return res.status(200).end();
+    return db_helper.editTask(taskObj.taskid, "isComplete", taskObj.isComplete)
+    // .then((result)=> {
+    //   console.log(result);
+    //   return res.status(200).send('Task modified');
+    // })
   })
 
   return router;
