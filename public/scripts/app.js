@@ -3,12 +3,11 @@ $(() => {
   $user = {};
   loadDbItems('/users/',(response)=>{
     $.when(response).done( () => {
-      $user = JSON.parse(response);
+      $user = response;
       console.log($user);
       $('body').show(1000);
       isLogged($user.loggedin);
-      }
-    )
+    })
   });
 
   function isLogged(user){
@@ -17,10 +16,13 @@ $(() => {
     user ? (
       loadDbItems('/tasks/active', renderTasks),
       $('.logout-btn').show(),
-      $('.register-btn').css("display","none"),
-      $('.login-btn').css("display","none")
+      $('.register-btn').hide(),
+      $('.login-btn').hide()
     ):(
-      $('.logout-btn').css("display","none"),
+      $('#newTask').hide(),
+      $('.categories').hide(),
+      $('.logout-btn').hide(),
+      $('.login').show(),
       $('.navbar-brand').on('click', () => {
         $('.tasks').toggle();
         if($('.login').is(':visible')){
@@ -32,7 +34,9 @@ $(() => {
       }),
       $('.login-btn').show(),
       $('.login-btn').on('click', () => {
-        $('.login').toggle();
+        if( $('.login').is(':hidden') ){
+          $('.login').toggle();
+        }
         if($('.tasks').is(':visible')){
           $('.tasks').toggle()
         }
@@ -48,6 +52,9 @@ $(() => {
         }
         if($('.login').is(':visible')){
           $('.login').toggle()
+        }
+        if($('.register').is(':hidden')){
+          $('.register').toggle()
         }
       })
     )
@@ -70,7 +77,7 @@ $(() => {
 
   $('body').show(1000);
   $("#taskInput").focus();
-  $('#login-form').submit( function(e) {
+  $('#login-form').submit( (e) => {
     e.preventDefault();
     $('#bs-example-navbar-collapse-1').collapse('toggle');
     data = {
@@ -80,8 +87,21 @@ $(() => {
     upDbItems('/users/login',data,(response)=>{
       $user = JSON.parse(response);
       $('.tasks').toggle();
-      $('.login').toggle();
+      if( $('.login').is(':visible') ){
+        $('.login').toggle();
+      }
       isLogged($user);
+    });
+  })
+  $('#register-submit').on('click', (e) => {
+    e.preventDefault();
+    $('#bs-example-navbar-collapse-1').collapse('toggle');
+    data = $('#register-form').serialize();
+    upDbItems('/users/register',data,(response)=>{
+      console.log(response);
+      isLogged(response);
+      $('.register').toggle();
+      $('.tasks').toggle();
     });
   })
   $('.logout-btn').on('click', ()=>{
@@ -91,8 +111,8 @@ $(() => {
       isLogged(false);
     })
   })
-  $('.login').css("display","none");
-  $('.register').css("display","none");
+  $('.login').hide();
+  $('.register').hide();
   loadDbItems('/categories', renderCategories);
 
   // View rendering for tasks
@@ -118,7 +138,7 @@ $(() => {
     return $task;
   }
   function renderTasks(tasks) {
-    debugger;
+    // debugger;
     $('#tasks').empty();
     tasks ? (
       tasks.forEach((t) => {
@@ -133,6 +153,7 @@ $(() => {
 // View rendering for categories
   function createCategorieElement (categorieObj) {
     $categorie = $("<li/>", {
+      "role":"present"
     })
       .append($("<a/>", {
         "href" : "#"

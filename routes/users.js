@@ -13,7 +13,7 @@ function makeUserObject(requestObject){
   return {
       username: requestObject.username || '@Pat',
       first_name: requestObject.first_name || 'pdqwat',
-      last_name: requestObject.first_name || 'dndqjewd',
+      last_name: requestObject.last_name || 'dndqjewd',
       email: requestObject.email || "1dqw23@123",
       password: hash || '12dqw34'
     }
@@ -39,20 +39,20 @@ module.exports = (knex, app) => {
     db_helper.getUser('userid', userid)
     .then((user) => {
       return res.status(200).send(
-        JSON.stringify({
+        {
           loggedin: true,
           userid: user[0].userid,
           first_name: user[0].first_name,
           username: user[0].username,
           last_name: user[0].last_name
-        })
+        }
       );
     })
     .catch((err) => {res.status(500).send("Problem with the Database")})
 
   })
 
-  router.get('/register', (req, res) => {
+  router.post('/register', (req, res) => {
     const userObj = makeUserObject(req.body)
     let p1 = db_helper.isUsernameInUsers//(userObj.username);
      // the first promise gets called to check if the username is in the databse
@@ -69,7 +69,7 @@ module.exports = (knex, app) => {
           return p3(userObj.username)
             .then((value) => {
               req.session.user_id = value[0].userid;
-              return res.status(201).end("User created");
+              return res.status(201).end('1');
             });
           });
       });
