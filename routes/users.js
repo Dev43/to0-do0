@@ -40,7 +40,7 @@ module.exports = (knex, app) => {
     .then((user) => {
       return res.status(200).send(
         JSON.stringify({
-          loggedin: true;
+          loggedin: true,
           userid: user[0].userid,
           first_name: user[0].first_name,
           username: user[0].username,

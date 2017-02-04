@@ -3,15 +3,17 @@ $(() => {
   $user = {};
   loadDbItems('/users/',(response)=>{
     $.when(response).done( () => {
-      $user = response;
+      $user = JSON.parse(response);
       console.log($user);
       $('body').show(1000);
-      isLogged(response.loggedin);
+      isLogged($user.loggedin);
       }
     )
   });
 
   function isLogged(user){
+    // debugger;
+    console.log(user);
     user ? (
       loadDbItems('/tasks/active', renderTasks),
       $('.logout-btn').show(),
