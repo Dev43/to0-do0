@@ -41,9 +41,7 @@ function getMovieName(string){
 
 console.log(encodeURI(getMovieName(toDo)));
 
-function makeQueryForMovie(method, query){
-  return url + method + apiKey + "&query=" + encodeURI(query);
-}
+
 
 function makeQuery(method, query, id){
   return url + method + id + apiKey + "&query=" + encodeURI(query);
