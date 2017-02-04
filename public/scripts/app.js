@@ -134,7 +134,7 @@ $(() => {
         "class" : "task_label"
       })
         .append($("<input/>", {
-          "class": 'task-checkbox'
+          "class": 'task-checkbox',
           "type": "checkbox",
           "id": taskObj.taskid,
           "value": ""
