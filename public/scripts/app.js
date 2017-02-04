@@ -1,14 +1,24 @@
 $(() => {
-  loadDbItems('/users',(response)=>{
-    response === {} ? isLogged(false) : isLogged(true)
-  })
+  $arr = [];
+  $user = {};
+  loadDbItems('/users/',(response)=>{
+    $.when(response).done( () => {
+      $user = response;
+      console.log($user);
+      $('body').show(1000);
+      isLogged(response.loggedin);
+      }
+    )
+  });
+
   function isLogged(user){
     user ? (
+      loadDbItems('/tasks/active', renderTasks),
+      $('.logout-btn').show(),
       $('.register-btn').css("display","none"),
       $('.login-btn').css("display","none")
     ):(
       $('.logout-btn').css("display","none"),
-      loadDbItems('/tasks', renderTasks),
       $('.navbar-brand').on('click', () => {
         $('.tasks').toggle();
         if($('.login').is(':visible')){
@@ -18,6 +28,7 @@ $(() => {
           $('.register').toggle()
         }
       }),
+      $('.login-btn').show(),
       $('.login-btn').on('click', () => {
         $('.login').toggle();
         if($('.tasks').is(':visible')){
@@ -27,6 +38,7 @@ $(() => {
           $('.register').toggle()
         }
       }),
+      $('.register-btn').show(),
       $('.register-btn').on('click', () => {
         $('.register').toggle()
         if($('.tasks').is(':visible')){
@@ -38,43 +50,45 @@ $(() => {
       })
     )
   }
-
-  function loadDbItems(table, cb) {
+  function upDbItems(route, data, cb) {
     $.ajax({
-      url: table,
+      url: route,
+      data: data,
+      method: 'POST',
+      success: cb
+    });
+  }
+  function loadDbItems(route, cb) {
+    $.ajax({
+      url: route,
       method: 'GET',
       success: cb
     });
   }
 
-  function login(data, cb) {
-    $.ajax({
-      url: '/users/login',
-      data: {
-        username: data.username,
-        password: data.password
-      },
-      method: "POST",
-      success: cb
-    })
-  }
-// console.log($('#login-submit'));
-  $('#login-form').on('sumbit', '#login-submit', function(e) {
-    console.log('click');
+  $('body').show(1000);
+  $("#taskInput").focus();
+  $('#login-form').submit( function(e) {
+    e.preventDefault();
+    $('#bs-example-navbar-collapse-1').collapse('toggle');
     data = {
       username: $('#username').serialize(),
       password: $('#password').serialize(),
     }
-    login(data,(response)=>{
+    upDbItems('/users/login',data,(response)=>{
       $user = JSON.parse(response);
-      console.log($user);
+      $('.tasks').toggle();
+      $('.login').toggle();
       isLogged($user);
-      loadDbItems('/tasks/active', renderTasks);
     });
   })
-
-  $('body').show(1000);
-  $("#taskInput").focus();
+  $('.logout-btn').on('click', ()=>{
+    upDbItems('/users/logout', "logmeoutplz", () => {
+      $('.main').css('display','none');
+      $('.login').show();
+      isLogged(false);
+    })
+  })
   $('.login').css("display","none");
   $('.register').css("display","none");
   loadDbItems('/categories', renderCategories);
@@ -102,17 +116,16 @@ $(() => {
     return $task;
   }
   function renderTasks(tasks) {
+    debugger;
     $('#tasks').empty();
-    tasks ?
-      (tasks.forEach((t) => {
+    tasks ? (
+      tasks.forEach((t) => {
         console.log(t);
-        $taskElem = createTaskElement(t);
+        $taskElem = createTaskElement(t),
         $prevTask = $('#tasks li').first();
         $taskElem.insertBefore($prevTask);
       })
-    ):(
-      console.log('no tasks')
-    )
+    ):(0)
   }
 
 // View rendering for categories
@@ -135,34 +148,14 @@ $(() => {
     });
   }
 
-  function upDbItems(table, data, cb) {
-    $.ajax({
-      url: table,
-      data: data,
-      method: 'POST',
-      success: cb
-    });
-  }
-
-  // login('/users/login');
-  // logout('/users/login')
-  // register('/users/login')
-
   $("#newTask").keydown(function(e) {
     if(e.keyCode === 13){
       e.preventDefault();
-      console.log($("#newTask").serialize());
       $task = $("#newTask").serialize();
-      $.ajax({
-        url: "/tasks/new",
-        data: $task,
-        method: "POST",
-        success: () => {
-          $("#newTask input").val("");
-          console.log('new task created: '+ $task);
-          loadDbItems('/tasks', renderTasks);
-        }
-      })
+      upDbItems('/tasks/new', $task, () => {
+        $("#newTask input").val("");
+        loadDbItems('/tasks', renderTasks);
+      });
     }
   });
 });

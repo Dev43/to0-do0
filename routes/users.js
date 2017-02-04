@@ -31,13 +31,16 @@ module.exports = (knex, app) => {
 
   router.get('/', (req, res) => {
     if(!req.session.user_id){
-      return res.status(201).send("{}")
+      return res.status(201).send(
+        {loggedin: false}
+      )
     }
     const userid = req.session.user_id;
     db_helper.getUser('userid', userid)
     .then((user) => {
       return res.status(200).send(
         JSON.stringify({
+          loggedin: true;
           userid: user[0].userid,
           first_name: user[0].first_name,
           username: user[0].username,
@@ -80,10 +83,12 @@ module.exports = (knex, app) => {
     db_helper.getUser('username', username).then((user) => {
       if(!user.length){
         console.log("Error, your username is not valid");
-        return res.status(400).end("Error, your username is not valid");
+        // return res.status(400).end("Error, your username is not valid");
+        return 0;
       }
       if(!bcrypt.compareSync(password, user[0].password)){
-        return res.status(401).end("wrong password, try again");
+        // return res.status(401).end("wrong password, try again");
+        return 0;
       }
        req.session.user_id = user[0].userid;
        res.send(
@@ -97,7 +102,9 @@ module.exports = (knex, app) => {
     })
   });
 
-  router.get('/logout', (req, res) => {
+//comment yo
+
+  router.post('/logout', (req, res) => {
     req.session = null;
     res.status(200).end("Successfully Logged Out!")
     return;
