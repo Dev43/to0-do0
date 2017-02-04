@@ -8,8 +8,8 @@ const auth          = require('./lib/authenticate');
 
 
 function makeUserObject(requestObject){
-  const hash = bcrypt.hashSync("1234", 10);
-  // const hash = bcrypt.hashSync(requestObject.password, 10);
+  // const hash = bcrypt.hashSync("1234", 10);
+  const hash = bcrypt.hashSync(requestObject.password, 10);
   return {
       username: requestObject.username || '@Pat',
       first_name: requestObject.first_name || 'pdqwat',
@@ -94,10 +94,11 @@ module.exports = (knex, app) => {
         console.log('404');
         return 0;
       }
+      console.log(password);
+      console.log(user[0].password);
       if(!bcrypt.compareSync(password, user[0].password)){
-        // return res.status(401).end("wrong password, try again");
-        console.log('PSK');
-        return 0;
+        return res.status(401).end("wrong password, try again");
+        // return 0;
       }
        req.session.user_id = user[0].userid;
        res.send(
