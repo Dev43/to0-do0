@@ -64,12 +64,19 @@ module.exports = (knex, app) => {
         if(err){
          return res.status(400).send('user already in db')
         }
-        return  p2('users', userObj)
+        return p2('users', userObj)
           .then(() => {
           return p3(userObj.username)
             .then((value) => {
               req.session.user_id = value[0].userid;
-              return res.status(201).send(1);
+              return res.status(201).send(
+                JSON.stringify({
+                  loggedin: true,
+                  userid: userObj.userid,
+                  first_name: userObj.first_name,
+                  username: userObj.username,
+                  last_name: userObj.last_name
+                }));
             });
           });
       });
@@ -95,6 +102,7 @@ module.exports = (knex, app) => {
        req.session.user_id = user[0].userid;
        res.send(
          JSON.stringify({
+           loggedin: true,
            userid: user[0].userid,
            first_name: user[0].first_name,
            username: user[0].username,
