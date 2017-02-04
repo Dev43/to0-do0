@@ -6,7 +6,7 @@
 // // });
 
 // //AUTHENTICATION // will need to hide all of these!
-let query = "try shwartz";
+let query = "try bouillon bilk";
 let searchUrl = "https://api.yelp.com/v3/businesses/search?";
 let businessUrl = "https://api.yelp.com/v3/businesses/"
 let search = "term=";
@@ -62,7 +62,6 @@ $.ajax(createSettings(searchUrl, getRestaurantName(query), search )).done(functi
 
   $.ajax(createSettings(businessUrl, relevantRestaurantId, "")).done(function (resto) {
     console.log(resto);
-
 
   });
 
