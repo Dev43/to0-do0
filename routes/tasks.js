@@ -39,5 +39,9 @@ module.exports = (knex) => {
 
   });
 
+  router.post("/check", (req, res) => {
+    console.log(req.body);
+  })
+
   return router;
 }

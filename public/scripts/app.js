@@ -116,15 +116,13 @@ $(() => {
       isLogged(false);
     })
   })
-  $('.logout-btn').on('click', ()=>{
-    upDbItems('/users/logout', "logmeoutplz", () => {
-      $('.main').hide();
-      $('.login').show();
-      isLogged(false);
+  $('.task-checkbox').on('click', ()=>{
+    upDbItems('/tasks/check', "", () => {
+      console.log('check');
     })
   })
 
-  // View rendering for tasks
+  // View rendering for tasks with GET to DB
   function createTaskElement(taskObj) {
     $task = $("<li/>", {
       "class" : "list-group-item"
@@ -136,6 +134,7 @@ $(() => {
         "class" : "task_label"
       })
         .append($("<input/>", {
+          "class": 'task-checkbox'
           "type": "checkbox",
           "id": taskObj.taskid,
           "value": ""
@@ -160,7 +159,7 @@ $(() => {
     ):(0)
   }
 
-// View rendering for categories
+// View rendering for categories with GET to DB
   function createCategorieElement (categorieObj) {
     $categorie = $("<li/>", {
       "role":"present"
