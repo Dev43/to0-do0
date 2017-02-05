@@ -88,12 +88,12 @@ module.exports = (knex, app) => {
     const password = req.body.password;
 
     if(!username || !password){
-      return res.status(400).send("Error: username or Password not provided");
+      return res.status(400).send("username or password not provided");
     }
 
     db_helper.getUser('username', username).then((user) => {
       if(!user.length){
-        return res.status(400).end(new Error("Error, your username is not valid"));
+        return res.status(400).end("Your username is not valid");
       }
       console.log(password);
       console.log(user[0].password);
