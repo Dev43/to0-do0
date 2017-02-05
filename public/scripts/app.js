@@ -19,7 +19,9 @@ $(() => {
   }
 
   function errorCb(errResponse, type){
-    console.log(errResponse, type)
+   // alert(type + ": " + errResponse.responseText)
+    console.log($("#login-form .errorMsg"))
+    $(".errorMsg").html(type + ": " + errResponse.responseText)
   }
 
   // Empty arrays and objects for logged out usage of app
