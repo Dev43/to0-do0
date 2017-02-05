@@ -167,8 +167,7 @@ $(() => {
     $('#tasks').empty();
     tasks ? (
       tasks.forEach((t) => {
-        t.category_id ? console.log('categery defined') : t.category_id = 0
-        // console.log(t);
+        t.category_id ? console.log('') : t.category_id = 0
         $taskElem = createTaskElement(t);
         $prevTask = $('#tasks li').first();
         $taskElem.insertBefore($prevTask);
@@ -209,6 +208,7 @@ $(() => {
     $cat = Number(e.target.name.slice(0,1));
     $query = e.target.name.slice(1)+"";
     whatCategory($cat).cb($query,(res)=>{
+      // $('.modal-content').empty();
       $('.modal-title').text(res.title);
       $('.modal-body > h5').text(res.description);
       $('.modal-body > .rating').text("Rating: "+res.rating);
@@ -424,7 +424,8 @@ function getRestaurant(query,cb){
     $.ajax(createSettings(businessUrl, relevantRestaurantId, "")).done(function (resto) {
       let restoInfo = standardInformationBuilder(resto.phone, resto.image_url, resto.rating, resto.name)
       console.log(resto)
-      return cb(resto);
+      return cb(restoInfo);
+
     });
   });
   }
@@ -456,8 +457,8 @@ function getProduct(query,cb){
   $.ajax(createSettings(getProductName(query))).done(function (products) {
     let theProducts = JSON.parse(products);
     let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
-    let theResults = standardInformationBuilder(resultInfo.subtitle[0], resultInfo.galleryURL[0], resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
-    console.log(theResults)
+    let theResults = standardInformationBuilder((resultInfo.subtitle[0] || resultInfo.title[0]) , (resultInfo.galleryURL[0] || ""), resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
+    console.log(theResults);
     return cb(theResults);
   });
 }
