@@ -113,7 +113,7 @@ $(() => {
         break;
       default:
       theCategory = "Uncategorized"
-        theClass = "";
+        theClass = "uncategorized";
     }
 
     $task = $("<li/>", {
@@ -189,7 +189,6 @@ $(() => {
 
   $(".categories").on('click', function(e) {
     let category = e.target.innerHTML;
-    console.log(category)
     loadDbItems("/tasks/" + category, renderTasks)
   })
 
