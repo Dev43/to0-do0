@@ -110,6 +110,14 @@ $(() => {
         .append(taskObj.task_name)
       )
     )
+    .append($("<button/>", {
+       "type" : "button",
+       "name" : "modalToggle",
+       "class" : "btn btn-primary modalToggle",
+       "data-toggle" : "modal",
+       "data-target" : "#myModal",
+       "text" : "More info"
+    }))
     $("#tasks").append($task);
     return $task;
   }
@@ -126,7 +134,7 @@ $(() => {
     ):(0)
   }
 
-// View rendering for categories with GET to DB
+  // View rendering for categories with GET to DB
   function createCategorieElement (categorieObj) {
     $categorie = $("<li/>", {
       "role":"present"
@@ -189,7 +197,7 @@ $(() => {
       isLogged(false);
     })
   })
-  $('ul#tasks').on('click', 'li>div>label>input.task-checkbox', (e) => {
+  $('ul#tasks').delegate('li>div', 'click', (e) => {
     console.log(e.target);
     $task = {
       taskid : e.target.id,
