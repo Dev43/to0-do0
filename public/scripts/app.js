@@ -440,7 +440,7 @@ function getProduct(query,cb){
     let theProducts = JSON.parse(products);
     let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
     console.log(resultInfo)
-    let theResults = standardInformationBuilder((resultInfo.subtitle[0] || resultInfo.title[0]) , (resultInfo.galleryURL[0] || ""), resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
+    let theResults = standardInformationBuilder((resultInfo.subtitle || resultInfo.title[0]) , (resultInfo.galleryURL[0] || ""), resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
     return cb(theResults);
   });
 }
