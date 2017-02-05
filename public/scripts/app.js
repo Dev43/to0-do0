@@ -123,7 +123,7 @@ $(() => {
       "class" : "checkbox",
 
     })
-      // .append($("<div class= 'theCategory'>" + theCategory + "</div>"))
+    // .append($("<div class= 'theCategory'>" + theCategory + "</div>"))
       .append($("<label/>", {
         "class" : "task_label"
       })
@@ -155,17 +155,18 @@ $(() => {
     ):(0)
   }
 
+
 // View rendering for categories with GET to DB
-  function createCategorieElement (categorieObj) {
-    $categorie = $("<li/>", {
+  function createCategorieElement (categoryObj) {
+    $category = $("<li/>", {
       "role":"present"
     })
       .append($("<a/>", {
         "href" : "#"
-      }).append(categorieObj.category_name)
+      }).append(categoryObj.category_name)
     );
-    $(".categories").append($categorie);
-    return $categorie;
+    $(".categories").append($category);
+    return $category;
   }
   function renderCategories(categories) {
     $('.categories').empty();
@@ -185,6 +186,12 @@ $(() => {
       });
     }
   });
+
+  $(".categories").on('click', function(e) {
+    let category = e.target.innerHTML;
+    console.log(category)
+    loadDbItems("/tasks/" + category, renderTasks)
+  })
 
   $('#login-submit').on('click', (e) => {
     e.preventDefault();
