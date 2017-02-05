@@ -127,20 +127,26 @@ $(() => {
   // View rendering for tasks
   function createTaskElement(taskObj) {
     var theClass = "";
+    var theCategory = ""
     switch(taskObj.category_id){
       case 1:
+        theCategory = "Movies"
         theClass = "list-group-item-danger";
       break;
       case 2:
+        theCategory = "Books";
         theClass = "list-group-item-info";
       break;
       case 3:
+        theCategory = "Food";
         theClass = "list-group-item-warning"
       break;
       case 4:
+        theCategory = "Products"
         theClass = "list-group-item-success";
         break;
       default:
+      theCategory = "Uncategorized"
         theClass = "active";
     }
 
@@ -151,6 +157,7 @@ $(() => {
       "class" : "checkbox",
 
     })
+      .append($("<div class= 'theCategory'>" + theCategory + "</div>"))
       .append($("<label/>", {
         "class" : "task_label"
       })
@@ -160,6 +167,7 @@ $(() => {
           "data-categoryId" : taskObj.category_id,
           "value": ""
           })
+
         )
         .append(taskObj.task_name)
       )
