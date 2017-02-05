@@ -263,11 +263,8 @@ function getBook(query){
       let theBook = books.items[0].volumeInfo;
       bookInfo =  standardInformationBuilder(theBook.description,theBook.imageLinks.smallThumbnail, theBook.averageRating, theBook.title )
       return bookInfo;
-
-    })
-
+  });
 }
-
 
 function getMovie(query){
 
@@ -304,7 +301,6 @@ function getMovie(query){
         let movieInfo = standardInformationBuilder(movie.overview, "", movie.vote_average, movie.title );
         return movieInfo;
       })
-
     });
   }
 
@@ -360,7 +356,41 @@ function getRestaurant(query){
   });
   }
 
+function getProduct(query){
+  let url = "https://svcs.ebay.com/services/search/FindingService/v1?SECURITY-APPNAME=PatrickG-LHLtodo-PRD-4cd409a3e-159a43e4&OPERATION-NAME=findItemsByKeywords&SERVICE-VERSION=1.0.0&RESPONSE-DATA-FORMAT=JSON&REST-PAYLOAD"
+  let endUrl = "&paginationInput.entriesPerPage=1"
 
+  function getProductName(string){
+    string =  string.split(" ");
+    string.shift();
+   return "(" + string.join(",") + ")";
+  }
+
+  function makeQuery( query){
+    return url + "&keywords=" + encodeURI(query) + endUrl;
+  }
+
+  console.log(makeQuery(getProductName(query)))
+
+  function createSettings(query){
+    return {
+      "async": true,
+      "crossDomain": true,
+      "url": 'https://cors-anywhere.herokuapp.com/' + makeQuery(query),
+      "method": "GET",
+      "headers": {"x-requested-with": "dev/me"}
+    }
+  }
+
+  $.ajax(createSettings(getProductName(query))).done(function (products) {
+    let theProducts = JSON.parse(products);
+    let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
+    console.log(resultInfo)
+    let theResults = standardInformationBuilder(resultInfo.subtitle[0], resultInfo.galleryURL[0], resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
+    console.log(theResults);
+    return theResults;
+  });
+}
 
 });
 
