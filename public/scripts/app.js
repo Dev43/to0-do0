@@ -117,8 +117,7 @@ $(() => {
         catObj.theCategory = "Uncategorized";
         catObj.theClass = "Uncategorized";
         catObj.cb = function(){
-          console.log('happy');
-          return ''
+          return;
         }
     }
     return catObj;
@@ -210,6 +209,7 @@ $(() => {
     $cat = Number(e.target.name.slice(0,1));
     $query = e.target.name.slice(1)+"";
     whatCategory($cat).cb($query,(res)=>{
+      // $('.modal-content').empty();
       $('.modal-title').text(res.title);
       $('.modal-body > h5').text(res.description);
       $('.modal-body > .rating').text("Rating: "+res.rating);
@@ -406,7 +406,8 @@ function getRestaurant(query,cb){
     let relevantRestaurantId = restaurants.businesses[0].id;
     $.ajax(createSettings(businessUrl, relevantRestaurantId, "")).done(function (resto) {
       let restoInfo = standardInformationBuilder(resto.phone, resto.image_url, resto.rating, resto.name)
-      return cb(resto);
+      console.log(resto)
+      return cb(restoInfo);
     });
   });
   }
@@ -438,7 +439,8 @@ function getProduct(query,cb){
   $.ajax(createSettings(getProductName(query))).done(function (products) {
     let theProducts = JSON.parse(products);
     let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
-    let theResults = standardInformationBuilder(resultInfo.subtitle[0], resultInfo.galleryURL[0], resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
+    console.log(resultInfo)
+    let theResults = standardInformationBuilder((resultInfo.subtitle[0] || resultInfo.title[0]) , (resultInfo.galleryURL[0] || ""), resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
     return cb(theResults);
   });
 }
