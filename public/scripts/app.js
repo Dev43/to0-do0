@@ -197,7 +197,6 @@ $(() => {
       $catElem = createCategorieElement(c)
       $('.categories').append($catElem);
     });
-    let allElement = createCategorieElement({category_name: "All"})
     let activeElement = createCategorieElement({category_name: "Active"})
       $('.categories').append(allElement);
       $('.categories').append(activeElement);
@@ -262,6 +261,9 @@ $(() => {
     console.log($cat);
     $('#myModal').modal({show: true});
   });
+  $(".navbar-brand").on('click', function(e){
+    loadDbItems("/tasks/", renderTasks)
+  })
 
 
 function standardInformationBuilder(description, imgLink, rating, title){

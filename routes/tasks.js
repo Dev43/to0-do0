@@ -21,6 +21,10 @@ module.exports = (knex) => {
     })
   });
 
+  router.get('/All', (req, res) => {
+    return res.redirect('/')
+  })
+
   router.get("/:category", (req, res) => {
     let category = req.params.category;
     let userid = auth(req, res);
