@@ -5,15 +5,22 @@ $(() => {
       url: route,
       data: data,
       method: 'POST',
-      success: cb
+      success: cb,
+      error: errorCb
     });
   }
   function loadDbItems(route, cb) {
     $.ajax({
       url: route,
       method: 'GET',
-      success: cb
+      success: cb,
+      error: errorCb
     });
+  }
+
+  function errorCb(errResponse, type){
+   // alert(type + ": " + errResponse.responseText)
+    return $(".errorMsg").html(type + ": " + errResponse.responseText)
   }
 
   // Empty arrays and objects for logged out usage of app
@@ -24,9 +31,8 @@ $(() => {
   function isLogged(usr){
     $user = usr;
     $('.main').hide();
-    // debugger;
+
     if($user.loggedin){
-      console.log('loggedin');
       loadDbItems('/categories', renderCategories);
       loadDbItems('/tasks', renderTasks);
       $('#newTask').show();
@@ -36,7 +42,6 @@ $(() => {
       $('.register-btn').hide();
       $('.login-btn').hide();
     }else{
-      console.log('loggedout');
       $('#newTask').hide();
       $('.categories').hide();
       $('.logout-btn').hide();
@@ -81,17 +86,12 @@ $(() => {
   // First get request to server
   loadDbItems('/users/',(response)=>{
     $user = response;
-    console.log($user);
     $('body').show(1000);
     isLogged($user);
   });
 
   function whatCategory(int){
-    var catObj = {
-      theCategory: "",
-      theClass: "",
-      cb: '';
-    }
+    var catObj = {}
     switch(int){
       case 1:
         catObj.theCategory = "Movies";
@@ -115,23 +115,28 @@ $(() => {
         break;
       default:
         catObj.theCategory = "Uncategorized";
-        catObj.theClass = "";
+        catObj.theClass = "Uncategorized";
+        catObj.cb = function(){
+          console.log('happy');
+          return ''
+        }
     }
     return catObj;
   }
 
   // View rendering for tasks with GET to DB
   function createTaskElement(taskObj) {
-    var catName = whatCategory(taskObj.category_id).theCategory;
+    $cat = taskObj.category_id;
+    var catName = whatCategory($cat).theCategory;
 
     $task = $("<li/>", {
-      "class" : "list-group-item " + whatCategory().theClass,
+      "class" : "list-group-item " + whatCategory($cat).theClass
     })
     .append($("<div/>", {
       "class" : "checkbox",
 
     })
-      // .append($("<div class= 'theCategory'>" + theCategory + "</div>"))
+    // .append($("<div class= 'theCategory'>" + theCategory + "</div>"))
       .append($("<label/>", {
         "class" : "task_label"
       })
@@ -162,7 +167,6 @@ $(() => {
     return $task;
   }
   function renderTasks(tasks) {
-    // debugger;
     $('#tasks').empty();
     tasks ? (
       tasks.forEach((t) => {
@@ -175,22 +179,22 @@ $(() => {
     ):(0)
   }
 
-  // View rendering for categories with GET to DB
-  function createCategorieElement (categorieObj) {
-    $categorie = $("<li/>", {
+
+// View rendering for categories with GET to DB
+  function createCategorieElement (categoryObj) {
+    $category = $("<li/>", {
       "role":"present"
     })
       .append($("<a/>", {
         "href" : "#"
-      }).append(categorieObj.category_name)
+      }).append(categoryObj.category_name)
     );
-    $(".categories").append($categorie);
-    return $categorie;
+    $(".categories").append($category);
+    return $category;
   }
   function renderCategories(categories) {
     $('.categories').empty();
     categories.forEach(function(c){
-      // console.log(c);
       $catElem = createCategorieElement(c)
       $('.categories').append($catElem);
     });
@@ -200,7 +204,6 @@ $(() => {
     if(e.keyCode === 13){
       e.preventDefault();
       $task = $("#newTask").serialize();
-      console.log($task);
       upDbItems('/tasks/new', $task, () => {
         $("#newTask input").val("");
         loadDbItems('/tasks', renderTasks);
@@ -208,12 +211,15 @@ $(() => {
     }
   });
 
+  $(".categories").on('click', function(e) {
+    let category = e.target.innerHTML;
+    loadDbItems("/tasks/" + category, renderTasks)
+  })
+
   $('#login-submit').on('click', (e) => {
     e.preventDefault();
     data = $('#login-form').serialize();
-    console.log(data);
     upDbItems('/users/login',data,(response)=>{
-      console.log(response);
       // $user = JSON.parse(response);
       isLogged(JSON.parse(response));
     });
@@ -222,13 +228,7 @@ $(() => {
     e.preventDefault();
     data = $('#register-form').serialize();
     upDbItems('/users/register',data ,(response)=>{
-      console.log(response);
-      // $.when(response).done( () => {
-      //   $user = response;
-      //   console.log($user);
-      //   $('.main').hide();
       isLogged(JSON.parse(response));
-      // })
       $('#bs-example-navbar-collapse-1').collapse('toggle');
     });
   })
@@ -239,24 +239,24 @@ $(() => {
       isLogged(false);
     })
   })
-  $('ul#tasks').delegate('li>div', 'click', (e) => {
+  $('ul#tasks').delegate('li>div>label>input.task-checkbox', 'click', (e) => {
     console.log(e.target);
     $task = {
       taskid : e.target.id,
       isComplete : e.target.checked
     };
-    console.log($task);
     upDbItems('/tasks/edit', $task, () => {
       e.target.value
     })
   });
   $('ul#tasks').delegate('button.modalToggle', 'click', (e) => {
     // console.log("id :", e.target.id, " & ", "data-categoryId :", e.target.category_id);
-    $cat = e.target.name.slice(0,1);
-    $query = e.target.name.slice(1);
-    console.log($query, ':', $cat);
+    $cat = Number(e.target.name.slice(0,1));
+    $query = e.target.name.slice(1)+"";
     $theQuery = whatCategory($cat).cb($query);
-    console.log($theQuery);
+    console.log($cat);
+    console.log($query);
+    console.log($cat);
     $('#myModal').modal({show: true});
   });
 
@@ -274,8 +274,6 @@ function standardInformationBuilder(description, imgLink, rating, title){
 function getBook(query){
   let bookInfo = "";
   let url = "https://www.googleapis.com/books/v1/volumes?";
-  // let query = "read the sun also rises"
-  // let query = "read the lors of the rings"
 
 
   function getBookName(string){
@@ -289,7 +287,6 @@ function getBook(query){
   }
 
   function createSettings(query, id){
-    console.log(makeQuery(query))
     return {
       "async": true,
       "crossDomain": true,
@@ -340,10 +337,13 @@ function getMovie(query){
       // movies.media to know if tv show or movie -- implement later
       $.ajax(createSettings(movie, "",  movieId)).done(function(movie){
         let movieInfo = standardInformationBuilder(movie.overview, "", movie.vote_average, movie.title );
+        console.log(movieInfo);
         return movieInfo;
       })
     });
   }
+
+  getMovie('Watch Lord of the Rings')
 
 function getRestaurant(query){
   let searchUrl = "https://api.yelp.com/v3/businesses/search?";
@@ -411,8 +411,6 @@ function getProduct(query){
     return url + "&keywords=" + encodeURI(query) + endUrl;
   }
 
-  console.log(makeQuery(getProductName(query)))
-
   function createSettings(query){
     return {
       "async": true,
@@ -426,9 +424,7 @@ function getProduct(query){
   $.ajax(createSettings(getProductName(query))).done(function (products) {
     let theProducts = JSON.parse(products);
     let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
-    console.log(resultInfo)
     let theResults = standardInformationBuilder(resultInfo.subtitle[0], resultInfo.galleryURL[0], resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
-    console.log(theResults);
     return theResults;
   });
 }

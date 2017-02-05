@@ -8,7 +8,6 @@ const auth          = require('./lib/authenticate');
 
 
 function makeUserObject(requestObject){
-  // const hash = bcrypt.hashSync("1234", 10);
   const hash = bcrypt.hashSync(requestObject.password, 10);
   return {
       username: requestObject.username || '@Pat',
@@ -23,7 +22,7 @@ function makeUserObject(requestObject){
 module.exports = (knex, app) => {
 
   const db_helper = require('./lib/db-helpers.js')(knex);
-  app.use(cookieSession({ // attaches propety session to req
+  app.use(cookieSession({
     name: 'session',
     keys: ['key1', 'key2']
   }));
@@ -48,21 +47,20 @@ module.exports = (knex, app) => {
         }
       );
     })
-    .catch((err) => {res.status(500).send("Problem with the Database")})
+    .catch((err) => {return res.status(500).send("Problem with the Database")})
 
   })
 
   router.post('/register', (req, res) => {
     const userObj = makeUserObject(req.body)
-    let p1 = db_helper.isUsernameInUsers//(userObj.username);
-     // the first promise gets called to check if the username is in the databse
-    let p2 = db_helper.newDbInput//('users', userObj);
-    let p3 = db_helper.getUserId//(userObj.username);
+    let p1 = db_helper.isUsernameInUsers
+    let p2 = db_helper.newDbInput
+    let p3 = db_helper.getUserId
 
     p1(userObj.username)
       .then((err) => {
         if(err){
-         return res.status(400).send('user already in db')
+         return res.status(400).send('User already in DataBase')
         }
         return p2('users', userObj)
           .then(() => {
@@ -83,22 +81,19 @@ module.exports = (knex, app) => {
   });
 
   router.post('/login', (req, res) => {
-    // we will get username and password
-    const username = req.body.username || "@Pat";
-    const password = req.body.password || "1234";
-    console.log(req.body);
+    const username = req.body.username;
+    const password = req.body.password;
+
+    if(!username || !password){
+      return res.status(400).send("Username or password not provided");
+    }
 
     db_helper.getUser('username', username).then((user) => {
       if(!user.length){
-        // return res.status(400).end("Error, your username is not valid");
-        console.log('404');
-        return 0;
+        return res.status(400).end("Your username is not valid");
       }
-      console.log(password);
-      console.log(user[0].password);
       if(!bcrypt.compareSync(password, user[0].password)){
-        return res.status(401).end("wrong password, try again");
-        // return 0;
+        return res.status(401).end("Wrong password, try again");
       }
        req.session.user_id = user[0].userid;
        res.send(
@@ -112,8 +107,6 @@ module.exports = (knex, app) => {
       );
     })
   });
-
-//comment yo
 
   router.post('/logout', (req, res) => {
     req.session = null;
