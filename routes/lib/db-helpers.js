@@ -99,7 +99,7 @@ module.exports = function makeDbHelpers(knex){
 
     showAllFromCategory: function(userid, category){
       return knex
-      .select('tasks.task_name')
+      .select('tasks.task_name', "tasks.category_id")
       .from('tasks')
       .innerJoin('users', 'users.userid', 'tasks.user_id')
       .innerJoin('categories', 'categories.categoryid', 'tasks.category_id')
