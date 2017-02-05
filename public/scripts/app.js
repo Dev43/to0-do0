@@ -179,8 +179,7 @@ $(() => {
     ):(0)
   }
 
-
-// View rendering for categories with GET to DB
+  // View rendering for categories with GET to DB
   function createCategorieElement (categoryObj) {
     $category = $("<li/>", {
       "role":"present"
@@ -200,6 +199,35 @@ $(() => {
     });
   }
 
+  // View rendering for tasks with GET to DB
+  // function renderModal(query) {
+  //   $('.modal-title').innerHTML(query.title);
+  //   $('.modal-body > h5').innerHTML(query.description);
+  //   $('.modal-body > h3').innerHTML(query.rating);
+  // }
+
+  $('ul#tasks').delegate('button.modalToggle', 'click', (e) => {
+    $cat = Number(e.target.name.slice(0,1));
+    $query = e.target.name.slice(1)+"";
+    whatCategory($cat).cb($query,(res)=>{
+      $('.modal-title').text(res.title);
+      $('.modal-body > h5').text(res.description);
+      $('.modal-body > .rating').text("Rating: "+res.rating);
+      $('#myModal').modal({show: true});
+      console.log(res);
+    });
+    // renderModal($theQuery);
+    // console.log($cat);
+    // console.log($query);
+    // console.log($cat);
+    // console.log(
+    //   "id :",
+    //   e.target.id,
+    //   " & ",
+    //   "data-categoryId :",
+    //   e.target.category_id
+    // );
+  });
   $("#newTask").keydown(function(e) {
     if(e.keyCode === 13){
       e.preventDefault();
@@ -210,12 +238,10 @@ $(() => {
       });
     }
   });
-
   $(".categories").on('click', function(e) {
     let category = e.target.innerHTML;
     loadDbItems("/tasks/" + category, renderTasks)
   })
-
   $('#login-submit').on('click', (e) => {
     e.preventDefault();
     data = $('#login-form').serialize();
@@ -240,7 +266,7 @@ $(() => {
     })
   })
   $('ul#tasks').delegate('li>div>label>input.task-checkbox', 'click', (e) => {
-    console.log(e.target);
+    // console.log(e.target);
     $task = {
       taskid : e.target.id,
       isComplete : e.target.checked
@@ -248,16 +274,6 @@ $(() => {
     upDbItems('/tasks/edit', $task, () => {
       e.target.value
     })
-  });
-  $('ul#tasks').delegate('button.modalToggle', 'click', (e) => {
-    // console.log("id :", e.target.id, " & ", "data-categoryId :", e.target.category_id);
-    $cat = Number(e.target.name.slice(0,1));
-    $query = e.target.name.slice(1)+"";
-    $theQuery = whatCategory($cat).cb($query);
-    console.log($cat);
-    console.log($query);
-    console.log($cat);
-    $('#myModal').modal({show: true});
   });
 
 
@@ -271,7 +287,7 @@ function standardInformationBuilder(description, imgLink, rating, title){
   return info;
 }
 
-function getBook(query){
+function getBook(query,cb){
   let bookInfo = "";
   let url = "https://www.googleapis.com/books/v1/volumes?";
 
@@ -300,11 +316,11 @@ function getBook(query){
   $.ajax(createSettings(query)).done(function (books) {
       let theBook = books.items[0].volumeInfo;
       bookInfo =  standardInformationBuilder(theBook.description,theBook.imageLinks.smallThumbnail, theBook.averageRating, theBook.title )
-      return bookInfo;
+      return cb(bookInfo);
   });
 }
 
-function getMovie(query){
+function getMovie(query,cb){
 
   let apiKey =  "**API-KEY**";
   let url = "https://api.themoviedb.org/3/";
@@ -338,14 +354,12 @@ function getMovie(query){
       $.ajax(createSettings(movie, "",  movieId)).done(function(movie){
         let movieInfo = standardInformationBuilder(movie.overview, "", movie.vote_average, movie.title );
         console.log(movieInfo);
-        return movieInfo;
+        return cb(movieInfo);
       })
     });
   }
 
-  getMovie('Watch Lord of the Rings')
-
-function getRestaurant(query){
+function getRestaurant(query,cb){
   let searchUrl = "https://api.yelp.com/v3/businesses/search?";
   let businessUrl = "https://api.yelp.com/v3/businesses/"
   let search = "term=";
@@ -392,12 +406,12 @@ function getRestaurant(query){
     let relevantRestaurantId = restaurants.businesses[0].id;
     $.ajax(createSettings(businessUrl, relevantRestaurantId, "")).done(function (resto) {
       let restoInfo = standardInformationBuilder(resto.phone, resto.image_url, resto.rating, resto.name)
-      return resto;
+      return cb(resto);
     });
   });
   }
 
-function getProduct(query){
+function getProduct(query,cb){
   let url = "https://svcs.ebay.com/services/search/FindingService/v1?**SECURITY-APPNAME**&OPERATION-NAME=findItemsByKeywords&SERVICE-VERSION=1.0.0&RESPONSE-DATA-FORMAT=JSON&REST-PAYLOAD"
   let endUrl = "&paginationInput.entriesPerPage=1"
 
@@ -425,7 +439,7 @@ function getProduct(query){
     let theProducts = JSON.parse(products);
     let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
     let theResults = standardInformationBuilder(resultInfo.subtitle[0], resultInfo.galleryURL[0], resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
-    return theResults;
+    return cb(theResults);
   });
 }
 
