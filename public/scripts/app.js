@@ -152,7 +152,7 @@ $(() => {
         .append($("<div/>", {"text": taskObj.task_name}), $("<button/>", {
        "type" : "button",
        "name" : taskObj.category_id + taskObj.task_name,
-       "class" : "btn btn-primary modalToggle",
+       "class" : "btn btn-primary modalToggle col-6 col-md-4",
        "id" : taskObj.taskid,
       //  "data-toggle" : "modal",
       //  "data-target" : "#myModal",
