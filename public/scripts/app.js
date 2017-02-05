@@ -103,6 +103,8 @@ $(() => {
           "type": "checkbox",
           "checked": taskObj.isComplete,
           "id": taskObj.taskid
+          "data-categoryId" : taskObj.category_id,
+          "value": ""
           })
         )
         .append(taskObj.task_name)

@@ -1,11 +1,11 @@
 
 require('dotenv').config();
 
-const PORT        = process.env.PORT || 8080;
+const PORT        = process.env.PORT || 3000;
 const ENV         = process.env.ENV || "development";
 const express     = require("express");
-const app         = express();
-const knexConfig  = require("../<div class=""></div>/knexfile");
+// const app         = express();
+const knexConfig  = require("../../knexfile");
 const knex        = require("knex")(knexConfig[ENV]);
 const dbHelper    = require('./db-helpers')(knex);
 
@@ -30,15 +30,15 @@ let testTask = {
 dbHelper.newDbInput('users', testUser);
 dbHelper.newDbInput('tasks', testTask);
 
-dbHelper.editUser(1, {username: '@PGP'});
+dbHelper.editUser(1, {username: '@PGdkjsalkdhalkdjP'});
 dbHelper.editUser(2, {username: '@Awesome'});
 dbHelper.editUser(3, {username: '@dEWfewP'});
 
 
-dbHelper.editTask(2, 2, {isComplete: true});
-dbHelper.editTask(1, 1, {isComplete: true});
+dbHelper.editTask(2, 2, {isComplete: false});
+dbHelper.editTask(1, 1, {taskname: 'frefregfre'});
 dbHelper.editTask(1, 3, {task_name: 'Get money'}); // dooes not work, should fail
-dbHelper.editTask(3, 9, {task_name: 'Get money'});
+dbHelper.editTask(3, 3, {task_name: 'Get money'});
 dbHelper.editTask(2, 2, {isComplete: false});
 dbHelper.editTask(3, 5, {task_name: 'Checkout Shawarma Palace', isComplete: true});
 
@@ -53,7 +53,7 @@ dbHelper.showAllFromCategory(1, 'Movies');
 dbHelper.showAllFromCategory(3, 'Books');
 dbHelper.showAllFromCategory(2, 'Books');
 
-// change to have an assertion library
+change to have an assertion library
 
 
 app.listen(PORT, () => {
