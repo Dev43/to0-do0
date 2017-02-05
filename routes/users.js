@@ -84,20 +84,21 @@ module.exports = (knex, app) => {
 
   router.post('/login', (req, res) => {
     // we will get username and password
-    const username = req.body.username || "@Pat";
-    const password = req.body.password || "1234";
-    console.log(req.body);
+    const username = req.body.username;
+    const password = req.body.password;
+
+    if(!username || !password){
+      return res.status(400).send("Error: username or Password not provided");
+    }
 
     db_helper.getUser('username', username).then((user) => {
       if(!user.length){
-        // return res.status(400).end("Error, your username is not valid");
-        console.log('404');
-        return 0;
+        return res.status(400).end(new Error("Error, your username is not valid"));
       }
       console.log(password);
       console.log(user[0].password);
       if(!bcrypt.compareSync(password, user[0].password)){
-        return res.status(401).end("wrong password, try again");
+        return res.status(401).end("Wrong password, try again");
         // return 0;
       }
        req.session.user_id = user[0].userid;
