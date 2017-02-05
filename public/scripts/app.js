@@ -126,11 +126,30 @@ $(() => {
 
   // View rendering for tasks
   function createTaskElement(taskObj) {
+    var theClass = "";
+    switch(taskObj.category_id){
+      case 1:
+        theClass = "list-group-item-danger";
+      break;
+      case 2:
+        theClass = "list-group-item-info";
+      break;
+      case 3:
+        theClass = "list-group-item-warning"
+      break;
+      case 4:
+        theClass = "list-group-item-success";
+        break;
+      default:
+        theClass = "active";
+    }
+
     $task = $("<li/>", {
-      "class" : "list-group-item"
+      "class" : "list-group-item " + theClass,
     })
     .append($("<div/>", {
-      "class" : "checkbox"
+      "class" : "checkbox",
+
     })
       .append($("<label/>", {
         "class" : "task_label"
