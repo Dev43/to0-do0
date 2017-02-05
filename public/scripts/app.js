@@ -88,12 +88,38 @@ $(() => {
 
   // View rendering for tasks with GET to DB
   function createTaskElement(taskObj) {
+    var theClass = "";
+    var theCategory = ""
+    switch(taskObj.category_id){
+      case 1:
+        theCategory = "Movies"
+        theClass = "list-group-item-danger";
+      break;
+      case 2:
+        theCategory = "Books";
+        theClass = "list-group-item-info";
+      break;
+      case 3:
+        theCategory = "Food";
+        theClass = "list-group-item-warning"
+      break;
+      case 4:
+        theCategory = "Products"
+        theClass = "list-group-item-success";
+        break;
+      default:
+      theCategory = "Uncategorized"
+        theClass = "";
+    }
+
     $task = $("<li/>", {
-      "class" : "list-group-item"
+      "class" : "list-group-item " + theClass,
     })
     .append($("<div/>", {
-      "class" : "checkbox"
+      "class" : "checkbox",
+
     })
+      // .append($("<div class= 'theCategory'>" + theCategory + "</div>"))
       .append($("<label/>", {
         "class" : "task_label"
       })
@@ -106,6 +132,7 @@ $(() => {
           "data-categoryId" : taskObj.category_id,
           "value": ""
           })
+
         )
         .append(taskObj.task_name)
       )
@@ -158,6 +185,7 @@ $(() => {
       });
     }
   });
+
   $('#login-submit').on('click', (e) => {
     e.preventDefault();
     data = $('#login-form').serialize();
@@ -200,4 +228,182 @@ $(() => {
       e.target.value
     })
   })
+
+
+function standardInformationBuilder(description, imgLink, rating, title){
+  let info = {
+    title: title,
+    rating: rating,
+    description: description,
+    imgLink: imgLink
+  }
+  return info;
+}
+
+function getBook(query){
+  let bookInfo = "";
+  let url = "https://www.googleapis.com/books/v1/volumes?";
+  // let query = "read the sun also rises"
+  // let query = "read the lors of the rings"
+
+
+  function getBookName(string){
+    string =  string.split(" ");
+    string.shift();
+   return string.join(" ");
+  }
+
+  function makeQuery(query){
+    return url + "q=" + encodeURI(query);
+  }
+
+  function createSettings(query, id){
+    console.log(makeQuery(query))
+    return {
+      "async": true,
+      "crossDomain": true,
+      "url":   makeQuery(query),
+      "method": "GET",
+      "data": "{}",
+      "dataType":'jsonp'
+    }
+  }
+
+  $.ajax(createSettings(query)).done(function (books) {
+      let theBook = books.items[0].volumeInfo;
+      bookInfo =  standardInformationBuilder(theBook.description,theBook.imageLinks.smallThumbnail, theBook.averageRating, theBook.title )
+      return bookInfo;
+  });
+}
+
+function getMovie(query){
+
+  let apiKey =  "**API-KEY**";
+  let url = "https://api.themoviedb.org/3/";
+  let search = 'search/multi';
+  let movie = 'movie/';
+  let language = '&language=en-US';
+  let theQuery = getMovieName(query)
+
+  function getMovieName(string){
+    string =  string.split(" ");
+    string.shift();
+   return string.join(" ");
+  }
+
+  function makeQuery(method, query, id){
+    return url + method + id + apiKey + "&query=" + encodeURI(query);
+  }
+
+  function createSettings(method, query, id){
+    return {
+      "async": true,
+      "crossDomain": true,
+      "url": makeQuery(method, query, id),
+      "method": "GET"
+    }
+  }
+
+    $.ajax(createSettings(search, theQuery, "")).done(function (moviesOrTvShows) {
+      let movieId = moviesOrTvShows.results[0].id;
+      // movies.media to know if tv show or movie -- implement later
+      $.ajax(createSettings(movie, "",  movieId)).done(function(movie){
+        let movieInfo = standardInformationBuilder(movie.overview, "", movie.vote_average, movie.title );
+        return movieInfo;
+      })
+    });
+  }
+
+function getRestaurant(query){
+  let searchUrl = "https://api.yelp.com/v3/businesses/search?";
+  let businessUrl = "https://api.yelp.com/v3/businesses/"
+  let search = "term=";
+  var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": 'https://cors-anywhere.herokuapp.com/' + makeQuery(query),
+    "method": "GET",
+    "headers": {
+      "authorization": "**AUTHORIZATION**",
+      "cache-control": "no-cache",
+    }
+  }
+
+  function createSettings(url, query, method){
+    return {
+      "async": true,
+      "crossDomain": true,
+      "url": 'https://cors-anywhere.herokuapp.com/' + makeQuery(url, query, method),
+      "method": "GET",
+      "headers": {
+      "authorization": "**AUTHORIZATION**",
+      "cache-control": "no-cache",
+      }
+    }
+  }
+
+  function getRestaurantName(string){
+    string =  string.split(" ");
+    string.shift();
+   return string.join(" ");
+  }
+
+  function makeQuery(url, query, method){
+    if(!method){
+      return url + query;
+    } else {
+    return url + method + encodeURI(query) + "&location=montreal";
+    }
+  }
+
+  $.ajax(createSettings(searchUrl, getRestaurantName(query), search )).done(function (restaurants) {
+
+    let relevantRestaurantId = restaurants.businesses[0].id;
+    $.ajax(createSettings(businessUrl, relevantRestaurantId, "")).done(function (resto) {
+      let restoInfo = standardInformationBuilder(resto.phone, resto.image_url, resto.rating, resto.name)
+      return resto;
+    });
+  });
+  }
+
+function getProduct(query){
+  let url = "https://svcs.ebay.com/services/search/FindingService/v1?**SECURITY-APPNAME**&OPERATION-NAME=findItemsByKeywords&SERVICE-VERSION=1.0.0&RESPONSE-DATA-FORMAT=JSON&REST-PAYLOAD"
+  let endUrl = "&paginationInput.entriesPerPage=1"
+
+  function getProductName(string){
+    string =  string.split(" ");
+    string.shift();
+   return "(" + string.join(",") + ")";
+  }
+
+  function makeQuery( query){
+    return url + "&keywords=" + encodeURI(query) + endUrl;
+  }
+
+  console.log(makeQuery(getProductName(query)))
+
+  function createSettings(query){
+    return {
+      "async": true,
+      "crossDomain": true,
+      "url": 'https://cors-anywhere.herokuapp.com/' + makeQuery(query),
+      "method": "GET",
+      "headers": {"x-requested-with": "dev/me"}
+    }
+  }
+
+  $.ajax(createSettings(getProductName(query))).done(function (products) {
+    let theProducts = JSON.parse(products);
+    let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
+    console.log(resultInfo)
+    let theResults = standardInformationBuilder(resultInfo.subtitle[0], resultInfo.galleryURL[0], resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
+    console.log(theResults);
+    return theResults;
+  });
+}
+
 });
+
+
+
+
