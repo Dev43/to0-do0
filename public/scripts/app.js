@@ -149,10 +149,7 @@ $(() => {
           "value": ""
         })
         )
-        .append(taskObj.task_name)
-      )
-    )
-    .append($("<button/>", {
+        .append($("<div/>", {"text": taskObj.task_name}), $("<button/>", {
        "type" : "button",
        "name" : taskObj.category_id + taskObj.task_name,
        "class" : "btn btn-primary modalToggle",
@@ -160,8 +157,19 @@ $(() => {
       //  "data-toggle" : "modal",
       //  "data-target" : "#myModal",
        "text" : "More info"
-      })
+      }) )
+      )
     )
+    // .append($("<button/>", {
+    //    "type" : "button",
+    //    "name" : taskObj.category_id + taskObj.task_name,
+    //    "class" : "btn btn-primary modalToggle",
+    //    "id" : taskObj.taskid,
+    //   //  "data-toggle" : "modal",
+    //   //  "data-target" : "#myModal",
+    //    "text" : "More info"
+    //   })
+    // )
     $("#tasks").append($task);
     return $task;
   }
@@ -198,7 +206,6 @@ $(() => {
       $('.categories').append($catElem);
     });
     let activeElement = createCategorieElement({category_name: "Active"})
-      $('.categories').append(allElement);
       $('.categories').append(activeElement);
   }
 
