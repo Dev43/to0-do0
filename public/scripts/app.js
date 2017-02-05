@@ -180,8 +180,7 @@ $(() => {
       $('#bs-example-navbar-collapse-1').collapse('toggle');
     });
   })
-  $('.logout-btn').on('click', (e)=>{
-    e.preventDefault();
+  $('#logout-nav-btn').on('click', ()=>{
     upDbItems('/users/logout', "logmeoutplz", () => {
       $('.main').hide();
       $('.login').show();
