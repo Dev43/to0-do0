@@ -19,10 +19,6 @@ module.exports = function makeDbHelpers(knex){
     },
 
     editTask: function(userid, taskId, updateObject){ // same thing here, we need to craft a good object on the server-side ADD TASK Id
-<<<<<<< HEAD
-=======
-      console.log("fewfewfwe")
->>>>>>> dev
       return knex('tasks')
       .where('user_id', userid)
       .andWhere('taskid', taskId)
