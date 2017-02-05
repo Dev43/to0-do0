@@ -28,7 +28,7 @@ $(() => {
     if($user.loggedin){
       console.log('loggedin');
       loadDbItems('/categories', renderCategories);
-      loadDbItems('/tasks/active', renderTasks);
+      loadDbItems('/tasks', renderTasks);
       $('#newTask').show();
       $("#taskInput").focus();
       $('.tasks').show();
@@ -116,7 +116,7 @@ $(() => {
     $('#tasks').empty();
     tasks ? (
       tasks.forEach((t) => {
-        console.log(t);
+        // console.log(t);
         $taskElem = createTaskElement(t);
         $prevTask = $('#tasks li').first();
         $taskElem.insertBefore($prevTask);
@@ -139,7 +139,7 @@ $(() => {
   function renderCategories(categories) {
     $('.categories').empty();
     categories.forEach(function(c){
-      console.log(c);
+      // console.log(c);
       $catElem = createCategorieElement(c)
       $('.categories').append($catElem);
     });
@@ -149,6 +149,7 @@ $(() => {
     if(e.keyCode === 13){
       e.preventDefault();
       $task = $("#newTask").serialize();
+      console.log($task);
       upDbItems('/tasks/new', $task, () => {
         $("#newTask input").val("");
         loadDbItems('/tasks', renderTasks);
@@ -160,6 +161,7 @@ $(() => {
     data = $('#login-form').serialize();
     console.log(data);
     upDbItems('/users/login',data,(response)=>{
+      console.log(response);
       // $user = JSON.parse(response);
       isLogged(JSON.parse(response));
     });
@@ -178,7 +180,7 @@ $(() => {
       $('#bs-example-navbar-collapse-1').collapse('toggle');
     });
   })
-  $('.logout-btn').on('click', ()=>{
+  $('.logout-btn').on('click', (e)=>{
     e.preventDefault();
     upDbItems('/users/logout', "logmeoutplz", () => {
       $('.main').hide();

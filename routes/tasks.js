@@ -43,14 +43,15 @@ module.exports = (knex) => {
   });
 
   router.post("/edit", (req, res) => {
+    let userid = auth(req, res);
     const taskObj = {
       taskid : req.body.taskid,
-      isComplete : req.body.isComplete
+      state : req.body.isComplete
     }
     console.log(req.body);
-    console.log(taskObj.isComplete);
+    console.log(taskObj);
     // return res.status(200).end();
-    return db_helper.editTask(taskObj.taskid, "isComplete", taskObj.isComplete)
+    return db_helper.editTask(userid ,taskObj.taskid, {isComplete: taskObj.state})
     // .then((result)=> {
     //   console.log(result);
     //   return res.status(200).send('Task modified');
