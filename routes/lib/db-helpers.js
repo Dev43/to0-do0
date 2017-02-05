@@ -7,14 +7,14 @@ module.exports = function makeDbHelpers(knex){
     newDbInput: function(tableName, rowToInsert ){ // made it so it can be a new user OR a new task
       return knex(tableName)
         .insert(rowToInsert)
-        .then(() => { console.log('Add Input'); return})
+        .then(() => {  return console.log('Add Input');})
 
     },
 
     newUserInput: function(tableName, rowToInsert ){ // made it so it can be a new user OR a new task
       return knex('users')
         .insert(rowToInsert)
-        .then(() => { console.log('Add Input'); return})
+        .then(() => { return console.log('Add Input'); })
 
     },
 
@@ -23,11 +23,10 @@ module.exports = function makeDbHelpers(knex){
       .where('user_id', userid)
       .andWhere('taskid', taskId)
       .update(updateObject)
-      .catch((err) => {return console.log("THIS IS THE ERR" +err)})
+      .catch((err) => {return "Error while editing: " + err})
       .then( (result) => {
-        console.log("hi")
         if(result === 0){
-          return console.log('Not Found')
+          return 'Not Found';
         }
         return console.log('Updated Task')});
     },
@@ -54,8 +53,7 @@ module.exports = function makeDbHelpers(knex){
       .select('userid')
       .from('users')
       .where('username', username)
-      .then((result) => {//console.log(result);
-       return result})
+      .then((result) => {return result})
       .catch((err) => {return err});
     },
 
@@ -67,7 +65,6 @@ module.exports = function makeDbHelpers(knex){
       return  knex('tasks')
       .where(`user_id`, userid)
       .then((results) => {
-        console.log(results);
         return results;})
     },
 
@@ -75,9 +72,7 @@ module.exports = function makeDbHelpers(knex){
       return knex('tasks')
       .where(`user_id`, userid)
       .andWhere('isComplete', true)
-      .then((results) => {
-        console.log(results);
-        return results;})
+      .then((results) => {return results;})
     },
 
     getTaskFromUser : function(taskName, userid, isComplete){
@@ -89,6 +84,7 @@ module.exports = function makeDbHelpers(knex){
     },
 
     isUsernameInUsers: function(username){
+      // maybe also check with the email
       return knex('users')
       .where('username', username)
       .then((results) => {
@@ -97,20 +93,19 @@ module.exports = function makeDbHelpers(knex){
         }
         throw "Error, username already in Database"; // else it is already there, throw an error
       })
-      .catch((error) => {console.log(error); return "Error: " + error;})
+      .catch((error) => { return "Error: " + error;})
 
     },
 
     showAllFromCategory: function(userid, category){
       return knex
-      .select('tasks.task_name')
+      .select('tasks.task_name', "tasks.category_id")
       .from('tasks')
       .innerJoin('users', 'users.userid', 'tasks.user_id')
       .innerJoin('categories', 'categories.categoryid', 'tasks.category_id')
       .where('category_name', category)
       .andWhere('userid', userid)
       .then((results) => {
-        console.log(results);
         return results;})
     }
   }
