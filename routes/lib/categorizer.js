@@ -8,6 +8,8 @@
   switch(splitString[0]){
     case 'watch':
     case'see':
+    case 'observe':
+    case 'view':
       theCategory = 'Movies'
       return 1;
     case 'read':
@@ -23,6 +25,7 @@
       return 3;
     case 'buy':
     case 'purchase':
+    case 'obtain':
       theCategory = 'Product'
       return 4;
       break;
