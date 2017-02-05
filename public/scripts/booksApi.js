@@ -31,8 +31,8 @@ function createSettings(query, id){
 $.ajax(createSettings(query)).done(function (books) {
     let bookInfo = {
       title: books.items[0].volumeInfo.title,
-      authorsArray: books.items[0].volumeInfo.authors,
-      publisher: books.items[0].volumeInfo.publisher,
+      // authorsArray: books.items[0].volumeInfo.authors,
+      // publisher: books.items[0].volumeInfo.publisher,
       description: books.items[0].volumeInfo.description,
       categoriesArray: books.items[0].volumeInfo.categories,
       rating: books.items[0].volumeInfo.averageRating,
