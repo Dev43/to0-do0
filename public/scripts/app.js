@@ -86,34 +86,46 @@ $(() => {
     isLogged($user);
   });
 
-  // View rendering for tasks with GET to DB
-  function createTaskElement(taskObj) {
-    var theClass = "";
-    var theCategory = ""
-    switch(taskObj.category_id){
+  function whatCategory(int){
+    var catObj = {
+      theCategory: "",
+      theClass: "",
+      cb: '';
+    }
+    switch(int){
       case 1:
-        theCategory = "Movies"
-        theClass = "list-group-item-danger";
+        catObj.theCategory = "Movies";
+        catObj.theClass = "list-group-item-danger";
+        catObj.cb = getMovie;
       break;
       case 2:
-        theCategory = "Books";
-        theClass = "list-group-item-info";
+        catObj.theCategory = "Books";
+        catObj.theClass = "list-group-item-info";
+        catObj.cb = getBook;
       break;
       case 3:
-        theCategory = "Food";
-        theClass = "list-group-item-warning"
+        catObj.theCategory = "Food";
+        catObj.theClass = "list-group-item-warning";
+        catObj.cb = getRestaurant;
       break;
       case 4:
-        theCategory = "Products"
-        theClass = "list-group-item-success";
+        catObj.theCategory = "Products";
+        catObj.theClass = "list-group-item-success";
+        catObj.cb = getProduct;
         break;
       default:
-      theCategory = "Uncategorized"
-        theClass = "";
+        catObj.theCategory = "Uncategorized";
+        catObj.theClass = "";
     }
+    return catObj;
+  }
+
+  // View rendering for tasks with GET to DB
+  function createTaskElement(taskObj) {
+    var catName = whatCategory(taskObj.category_id).theCategory;
 
     $task = $("<li/>", {
-      "class" : "list-group-item " + theClass,
+      "class" : "list-group-item " + whatCategory().theClass,
     })
     .append($("<div/>", {
       "class" : "checkbox",
@@ -131,20 +143,21 @@ $(() => {
           "id": taskObj.taskid,
           "data-categoryId" : taskObj.category_id,
           "value": ""
-          })
-
+        })
         )
         .append(taskObj.task_name)
       )
     )
     .append($("<button/>", {
        "type" : "button",
-       "name" : "modalToggle",
+       "name" : taskObj.category_id + taskObj.task_name,
        "class" : "btn btn-primary modalToggle",
-       "data-toggle" : "modal",
-       "data-target" : "#myModal",
+       "id" : taskObj.taskid,
+      //  "data-toggle" : "modal",
+      //  "data-target" : "#myModal",
        "text" : "More info"
-    }))
+      })
+    )
     $("#tasks").append($task);
     return $task;
   }
@@ -153,6 +166,7 @@ $(() => {
     $('#tasks').empty();
     tasks ? (
       tasks.forEach((t) => {
+        t.category_id ? console.log('categery defined') : t.category_id = 0
         // console.log(t);
         $taskElem = createTaskElement(t);
         $prevTask = $('#tasks li').first();
@@ -235,7 +249,16 @@ $(() => {
     upDbItems('/tasks/edit', $task, () => {
       e.target.value
     })
-  })
+  });
+  $('ul#tasks').delegate('button.modalToggle', 'click', (e) => {
+    // console.log("id :", e.target.id, " & ", "data-categoryId :", e.target.category_id);
+    $cat = e.target.name.slice(0,1);
+    $query = e.target.name.slice(1);
+    console.log($query, ':', $cat);
+    $theQuery = whatCategory($cat).cb($query);
+    console.log($theQuery);
+    $('#myModal').modal({show: true});
+  });
 
 
 function standardInformationBuilder(description, imgLink, rating, title){
@@ -411,7 +434,3 @@ function getProduct(query){
 }
 
 });
-
-
-
-
