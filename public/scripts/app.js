@@ -274,16 +274,16 @@ $(() => {
       e.target.value
     })
   });
-  $('ul#tasks').delegate('button.modalToggle', 'click', (e) => {
-    // console.log("id :", e.target.id, " & ", "data-categoryId :", e.target.category_id);
-    $cat = Number(e.target.name.slice(0,1));
-    $query = e.target.name.slice(1)+"";
-    $theQuery = whatCategory($cat).cb($query);
-    console.log($cat);
-    console.log($query);
-    console.log($cat);
-    $('#myModal').modal({show: true});
-  });
+  // $('ul#tasks').delegate('button.modalToggle', 'click', (e) => {
+  //   // console.log("id :", e.target.id, " & ", "data-categoryId :", e.target.category_id);
+  //   $cat = Number(e.target.name.slice(0,1));
+  //   $query = e.target.name.slice(1)+"";
+  //   $theQuery = whatCategory($cat).cb($query);
+  //   console.log($cat);
+  //   console.log($query);
+  //   console.log($cat);
+  //   $('#myModal').modal({show: true});
+  // });
   $(".navbar-brand").on('click', function(e){
     loadDbItems("/tasks/", renderTasks)
   })
