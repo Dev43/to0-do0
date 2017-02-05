@@ -135,7 +135,6 @@ $(() => {
       "class" : "checkbox",
 
     })
-    // .append($("<div class= 'theCategory'>" + theCategory + "</div>"))
       .append($("<label/>", {
         "class" : "task_label"
       })
@@ -160,16 +159,7 @@ $(() => {
       }) )
       )
     )
-    // .append($("<button/>", {
-    //    "type" : "button",
-    //    "name" : taskObj.category_id + taskObj.task_name,
-    //    "class" : "btn btn-primary modalToggle",
-    //    "id" : taskObj.taskid,
-    //   //  "data-toggle" : "modal",
-    //   //  "data-target" : "#myModal",
-    //    "text" : "More info"
-    //   })
-    // )
+
     $("#tasks").append($task);
     return $task;
   }
