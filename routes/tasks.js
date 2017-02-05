@@ -1,6 +1,7 @@
 "use strict";
 const router  = require('express').Router();
 const auth    = require('./lib/authenticate');
+const categorizer = require('./lib/categorizer');
 
 module.exports = (knex) => {
   const db_helper = require('./lib/db-helpers.js')(knex);
@@ -18,12 +19,15 @@ module.exports = (knex) => {
   });
 
   router.post("/new", (req, res) => {
+    if(!req.body.task_name){
+      return res.status(500).end("You cannot send an empty task")
+    }
     let userid = auth(req, res);
     const taskObj = {
-      user_id: userid || 3,
-      task_name: req.body.task_name || 'taskInactive',
-      category_id: req.body.category_id || 2,
-      isComplete: req.body.isComplete || true
+      user_id: userid,
+      task_name: req.body.task_name,
+      category_id: categorizer(req.body.task_name),
+      isComplete: req.body.isComplete || false
     };
 
     db_helper.getTaskFromUser(taskObj.task_name, taskObj.user_id, taskObj.isComplete)

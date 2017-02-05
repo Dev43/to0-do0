@@ -1,46 +1,44 @@
 
 
 // get in string from outside
- function decideOnCategory(toDoString) {
+ module.exports = function decideOnCategory(toDoString) {
 
   let splitString = toDoString.toLowerCase().split(" ");
-  console.log(splitString)
   let theCategory = ""
   switch(splitString[0]){
     case 'watch':
     case'see':
       theCategory = 'Movies'
-      break;
-    case 'try':
-    case 'eat':
-    case'make':
-      theCategory = "Food"
-      break;
-    case 'buy':
-    case 'purchase':
-      theCategory = 'Product'
-      break;
+      return 1;
     case 'read':
     case'look':
     case'inspect':
     case 'study':
       theCategory = "Books"
+      return 2;
+    case 'try':
+    case 'eat':
+    case'make':
+      theCategory = "Food"
+      return 3;
+    case 'buy':
+    case 'purchase':
+      theCategory = 'Product'
+      return 4;
       break;
     default:
-      theCategory = "Product"
-      break;
+      theCategory = "Uncategorized"
+      return;
 
   }
-
-return theCategory;
 }
 
 
-console.log(decideOnCategory('watch Lord of the rings')) // movie
-console.log(decideOnCategory('eat kimchi')) // food
-console.log(decideOnCategory('try Shwartzs')) // food
-console.log(decideOnCategory('read Lord of the Rings')) // books
-console.log(decideOnCategory('buy Lord of the Rings')) // Product
+// console.log(decideOnCategory('watch Lord of the rings')) // movie
+// console.log(decideOnCategory('eat kimchi')) // food
+// console.log(decideOnCategory('try Shwartzs')) // food
+// console.log(decideOnCategory('read Lord of the Rings')) // books
+// console.log(decideOnCategory('buy Lord of the Rings')) // Product
 
 
 

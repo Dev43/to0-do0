@@ -138,6 +138,7 @@ $(() => {
         .append($("<input/>", {
           "type": "checkbox",
           "id": taskObj.taskid,
+          "data-categoryId" : taskObj.category_id,
           "value": ""
           })
         )
