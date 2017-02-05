@@ -71,7 +71,7 @@ module.exports = function makeDbHelpers(knex){
     showAllActiveTasksFromUser: function(userid){
       return knex('tasks')
       .where(`user_id`, userid)
-      .andWhere('isComplete', true)
+      .andWhere('isComplete', false)
       .then((results) => {return results;})
     },
 
