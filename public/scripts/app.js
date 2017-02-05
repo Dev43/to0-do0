@@ -117,8 +117,7 @@ $(() => {
         catObj.theCategory = "Uncategorized";
         catObj.theClass = "Uncategorized";
         catObj.cb = function(){
-          console.log('happy');
-          return ''
+          return;
         }
     }
     return catObj;
@@ -198,6 +197,10 @@ $(() => {
       $catElem = createCategorieElement(c)
       $('.categories').append($catElem);
     });
+    let allElement = createCategorieElement({category_name: "All"})
+    let activeElement = createCategorieElement({category_name: "Active"})
+      $('.categories').append(allElement);
+      $('.categories').append(activeElement);
   }
 
   $("#newTask").keydown(function(e) {
@@ -300,6 +303,7 @@ function getBook(query){
   $.ajax(createSettings(query)).done(function (books) {
       let theBook = books.items[0].volumeInfo;
       bookInfo =  standardInformationBuilder(theBook.description,theBook.imageLinks.smallThumbnail, theBook.averageRating, theBook.title )
+      console.log(bookInfo)
       return bookInfo;
   });
 }
@@ -343,7 +347,6 @@ function getMovie(query){
     });
   }
 
-  getMovie('Watch Lord of the Rings')
 
 function getRestaurant(query){
   let searchUrl = "https://api.yelp.com/v3/businesses/search?";
@@ -392,6 +395,7 @@ function getRestaurant(query){
     let relevantRestaurantId = restaurants.businesses[0].id;
     $.ajax(createSettings(businessUrl, relevantRestaurantId, "")).done(function (resto) {
       let restoInfo = standardInformationBuilder(resto.phone, resto.image_url, resto.rating, resto.name)
+      console.log(resto)
       return resto;
     });
   });
@@ -425,6 +429,7 @@ function getProduct(query){
     let theProducts = JSON.parse(products);
     let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
     let theResults = standardInformationBuilder(resultInfo.subtitle[0], resultInfo.galleryURL[0], resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
+    console.log(theResults)
     return theResults;
   });
 }
