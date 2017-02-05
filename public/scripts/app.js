@@ -5,15 +5,21 @@ $(() => {
       url: route,
       data: data,
       method: 'POST',
-      success: cb
+      success: cb,
+      error: errorCb
     });
   }
   function loadDbItems(route, cb) {
     $.ajax({
       url: route,
       method: 'GET',
-      success: cb
+      success: cb,
+      error: errorCb
     });
+  }
+
+  function errorCb(errResponse, type){
+    console.log(errResponse, type)
   }
 
   // Empty arrays and objects for logged out usage of app
@@ -24,9 +30,8 @@ $(() => {
   function isLogged(usr){
     $user = usr;
     $('.main').hide();
-    // debugger;
+
     if($user.loggedin){
-      console.log('loggedin');
       loadDbItems('/categories', renderCategories);
       loadDbItems('/tasks', renderTasks);
       $('#newTask').show();
@@ -36,7 +41,6 @@ $(() => {
       $('.register-btn').hide();
       $('.login-btn').hide();
     }else{
-      console.log('loggedout');
       $('#newTask').hide();
       $('.categories').hide();
       $('.logout-btn').hide();
@@ -81,7 +85,6 @@ $(() => {
   // First get request to server
   loadDbItems('/users/',(response)=>{
     $user = response;
-    console.log($user);
     $('body').show(1000);
     isLogged($user);
   });
@@ -141,11 +144,9 @@ $(() => {
     return $task;
   }
   function renderTasks(tasks) {
-    // debugger;
     $('#tasks').empty();
     tasks ? (
       tasks.forEach((t) => {
-        // console.log(t);
         $taskElem = createTaskElement(t);
         $prevTask = $('#tasks li').first();
         $taskElem.insertBefore($prevTask);
@@ -168,7 +169,6 @@ $(() => {
   function renderCategories(categories) {
     $('.categories').empty();
     categories.forEach(function(c){
-      // console.log(c);
       $catElem = createCategorieElement(c)
       $('.categories').append($catElem);
     });
@@ -178,7 +178,6 @@ $(() => {
     if(e.keyCode === 13){
       e.preventDefault();
       $task = $("#newTask").serialize();
-      console.log($task);
       upDbItems('/tasks/new', $task, () => {
         $("#newTask input").val("");
         loadDbItems('/tasks', renderTasks);
@@ -189,10 +188,9 @@ $(() => {
   $('#login-submit').on('click', (e) => {
     e.preventDefault();
     data = $('#login-form').serialize();
-    console.log(data);
     upDbItems('/users/login',data,(response)=>{
-      console.log(response);
       // $user = JSON.parse(response);
+      console.log(response);
       isLogged(JSON.parse(response));
     });
   })
@@ -200,13 +198,7 @@ $(() => {
     e.preventDefault();
     data = $('#register-form').serialize();
     upDbItems('/users/register',data ,(response)=>{
-      console.log(response);
-      // $.when(response).done( () => {
-      //   $user = response;
-      //   console.log($user);
-      //   $('.main').hide();
       isLogged(JSON.parse(response));
-      // })
       $('#bs-example-navbar-collapse-1').collapse('toggle');
     });
   })
@@ -218,12 +210,10 @@ $(() => {
     })
   })
   $('ul#tasks').on('click', 'li>div>label>input.task-checkbox', (e) => {
-    console.log(e.target);
     $task = {
       taskid : e.target.id,
       isComplete : e.target.checked
     };
-    console.log($task);
     upDbItems('/tasks/edit', $task, () => {
       e.target.value
     })
@@ -258,7 +248,6 @@ function getBook(query){
   }
 
   function createSettings(query, id){
-    console.log(makeQuery(query))
     return {
       "async": true,
       "crossDomain": true,
@@ -380,8 +369,6 @@ function getProduct(query){
     return url + "&keywords=" + encodeURI(query) + endUrl;
   }
 
-  console.log(makeQuery(getProductName(query)))
-
   function createSettings(query){
     return {
       "async": true,
@@ -395,9 +382,7 @@ function getProduct(query){
   $.ajax(createSettings(getProductName(query))).done(function (products) {
     let theProducts = JSON.parse(products);
     let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
-    console.log(resultInfo)
     let theResults = standardInformationBuilder(resultInfo.subtitle[0], resultInfo.galleryURL[0], resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
-    console.log(theResults);
     return theResults;
   });
 }
