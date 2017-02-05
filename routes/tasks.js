@@ -27,17 +27,10 @@ module.exports = (knex) => {
     }
     let userid = auth(req, res);
     const taskObj = {
-<<<<<<< HEAD
-      user_id: userid || 3,
-      task_name: req.body.task_name || 'taskInactive',
-      category_id: req.body.category_id,
-      isComplete: req.body.isComplete
-=======
       user_id: userid,
       task_name: req.body.task_name,
       category_id: categorizer(req.body.task_name),
       isComplete: req.body.isComplete || false
->>>>>>> dev
     };
 
     db_helper.getTaskFromUser(taskObj.task_name, taskObj.user_id, taskObj.isComplete)

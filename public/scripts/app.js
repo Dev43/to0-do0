@@ -102,14 +102,14 @@ $(() => {
           "class": 'task-checkbox',
           "type": "checkbox",
           "checked": taskObj.isComplete,
-          "id": taskObj.taskid
+          "id": taskObj.taskid,
           "data-categoryId" : taskObj.category_id,
           "value": ""
           })
         )
         .append(taskObj.task_name)
       )
-    );
+    )
     $("#tasks").append($task);
     return $task;
   }
