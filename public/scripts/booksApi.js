@@ -47,4 +47,3 @@ $.ajax(createSettings(query)).done(function (books) {
 }
 
 getBook("read fight club")
-
