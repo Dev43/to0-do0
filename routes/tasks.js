@@ -17,9 +17,17 @@ module.exports = (knex) => {
     console.log(userid);
     db_helper.showAllActiveTasksFromUser(userid)
     .then((response) => {
-      res.json(response)
+      return res.json(response)
     })
   });
+
+  router.get("/:category", (req, res) => {
+    let category = req.params.category;
+    let userid = auth(req, res);
+    db_helper.showAllFromCategory(userid, category)
+    .then((result) => {console.log(result)
+      return res.status(200).json(result)} )
+  })
 
   router.post("/new", (req, res) => {
     if(!req.body.task_name){
@@ -35,7 +43,6 @@ module.exports = (knex) => {
 
     db_helper.getTaskFromUser(taskObj.task_name, taskObj.user_id, taskObj.isComplete)
     .then((result) => {
-      console.log(result);
       if(result.length > 0){
         return res.status(401).send("Task already in the list and active")
       }
