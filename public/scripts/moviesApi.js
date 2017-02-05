@@ -1,37 +1,16 @@
 
-// make ajax call to server to get category
-// depending on category, call a sepecific API
-
-// Food --> YELP
-// MOvies --> rotten tomatoes
-// Books --> AMAZON
-// Buy --> AMAZON
-
-// ASSUMING IM GETTING CATEGORY ID FROM THE TASK THAT WAS SELECTED,
-
-
-// 1 | Movies
-// 2 | Books
-// 3 | Food
-// 4 | Products
-
 // For TMDB
 // api key : 70c09d70d8283747ace652dfc047b3cf
 // https://api.themoviedb.org/3/movie/550?api_key=70c09d70d8283747ace652dfc047b3cf
 
-
+function getMovie(query){
 
 let apiKey =  "?api_key=70c09d70d8283747ace652dfc047b3cf";
 let url = "https://api.themoviedb.org/3/";
 let search = 'search/multi';
 let movie = 'movie/';
 let language = '&language=en-US';
-
-
-let toDo = "watch The Sound of Music"
-let theQuery = getMovieName(toDo)
-
-
+let theQuery = getMovieName(query)
 
 function getMovieName(string){
   string =  string.split(" ");
@@ -39,18 +18,9 @@ function getMovieName(string){
  return string.join(" ");
 }
 
-console.log(encodeURI(getMovieName(toDo)));
-
-
-
 function makeQuery(method, query, id){
   return url + method + id + apiKey + "&query=" + encodeURI(query);
 }
-
-console.log(makeQuery(search, getMovieName(toDo)))
-
-
-
 
 function createSettings(method, query, id){
   return {
@@ -63,17 +33,10 @@ function createSettings(method, query, id){
   }
 }
 
-$.ajax(createSettings(search, theQuery, "")).done(function (moviesOrTvShows) {
+  $.ajax(createSettings(search, theQuery, "")).done(function (moviesOrTvShows) {
     let movieId = moviesOrTvShows.results[0].id;
     // movies.media to know if tv show or movie -- implement later
-    console.log(movieId)
-    console.log(makeQuery(movie, "", movieId));
     $.ajax(createSettings(movie, "",  movieId)).done(function(movie){
-      console.log(movie);
-
-
-
-
       let movieInfo = {
        genreObj: movie.genres,
        title: movie.original_title,
@@ -82,13 +45,12 @@ $.ajax(createSettings(search, theQuery, "")).done(function (moviesOrTvShows) {
        tagline: movie.tagline
       }
 
-      console.log(movieInfo);
-      // MIOGHT NEED MORE INFO
-      // WILL PLAY WITH THIS API LATER
-
-
-
+       $('.two').append(`<code>${JSON.stringify(movieInfo)}</code>`)
+      return movieInfo;
     })
 
-});
+  });
+}
 
+
+getMovie("watch The Sound of Music");
