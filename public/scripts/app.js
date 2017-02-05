@@ -20,8 +20,7 @@ $(() => {
 
   function errorCb(errResponse, type){
    // alert(type + ": " + errResponse.responseText)
-    console.log($("#login-form .errorMsg"))
-    $(".errorMsg").html(type + ": " + errResponse.responseText)
+    return $(".errorMsg").html(type + ": " + errResponse.responseText)
   }
 
   // Empty arrays and objects for logged out usage of app
@@ -192,7 +191,6 @@ $(() => {
     data = $('#login-form').serialize();
     upDbItems('/users/login',data,(response)=>{
       // $user = JSON.parse(response);
-      console.log(response);
       isLogged(JSON.parse(response));
     });
   })
@@ -235,8 +233,6 @@ function standardInformationBuilder(description, imgLink, rating, title){
 function getBook(query){
   let bookInfo = "";
   let url = "https://www.googleapis.com/books/v1/volumes?";
-  // let query = "read the sun also rises"
-  // let query = "read the lors of the rings"
 
 
   function getBookName(string){
