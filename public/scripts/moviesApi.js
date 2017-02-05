@@ -27,9 +27,7 @@ function createSettings(method, query, id){
     "async": true,
     "crossDomain": true,
     "url": makeQuery(method, query, id),
-    "method": "GET",
-    "headers": {},
-
+    "method": "GET"
   }
 }
 
