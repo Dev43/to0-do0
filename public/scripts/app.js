@@ -147,7 +147,7 @@ $(() => {
         break;
       default:
       theCategory = "Uncategorized"
-        theClass = "active";
+        theClass = "";
     }
 
     $task = $("<li/>", {
@@ -157,7 +157,7 @@ $(() => {
       "class" : "checkbox",
 
     })
-      .append($("<div class= 'theCategory'>" + theCategory + "</div>"))
+      // .append($("<div class= 'theCategory'>" + theCategory + "</div>"))
       .append($("<label/>", {
         "class" : "task_label"
       })
@@ -219,4 +219,61 @@ $(() => {
       });
     }
   });
+
+function standardInformationBuilder(description, imgLink, rating, title){
+  let info = {
+    title: title,
+    rating: rating,
+    description: description,
+    imgLink: imgLink
+  }
+  return info;
+}
+
+function getBook(query){
+  let bookInfo = "";
+  let url = "https://www.googleapis.com/books/v1/volumes?";
+  // let query = "read the sun also rises"
+  // let query = "read the lors of the rings"
+
+
+  function getBookName(string){
+    string =  string.split(" ");
+    string.shift();
+   return string.join(" ");
+  }
+
+  function makeQuery(query){
+    return url + "q=" + encodeURI(query);
+  }
+
+  function createSettings(query, id){
+    console.log(makeQuery(query))
+    return {
+      "async": true,
+      "crossDomain": true,
+      "url":   makeQuery(query),
+      "method": "GET",
+      "data": "{}",
+      "dataType":'jsonp'
+    }
+  }
+
+  $.ajax(createSettings(query)).done(function (books) {
+      let theBook = books.items[0].volumeInfo;
+      bookInfo =  standardInformationBuilder(theBook.description,theBook.imageLinks.smallThumbnail, theBook.averageRating, theBook.title )
+      return bookInfo;
+
+    })
+
+}
+
+getBook("read lord of the rings")
+
+
+
 });
+
+
+
+
