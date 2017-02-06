@@ -226,7 +226,7 @@ $(() => {
 
 
       $('.modal-footer > .edit').on('click', function(e){
-
+        $('.modal-category').html('<input id="categoryInput" name="category" type="text" class="form-control" placeholder="' + whatCategory($cat).theCategory + '">');
       })
 
       $('#myModal').modal({show: true});
