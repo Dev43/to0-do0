@@ -35,6 +35,7 @@ $(function() {
       loadDbItems('/categories', renderCategories);
       loadDbItems('/tasks', renderTasks);
       $('#newTask').show();
+      $(".categories").show();
       $("#taskInput").focus();
       $('.tasks').show();
       $('.logout-btn').show();
