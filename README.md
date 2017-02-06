@@ -1,29 +1,70 @@
-# Node Skeleton
+# Way too due
 
-## Project Setup
+## First thing to do :
+Please before anything:
+  - Run the following commands:
+    1)$ npm install --save
+    2)$ npm install node-sass
+    3)$ npm node-pre-gyp install
+    4)$ npm install bcrypt
 
-1. Create your own empty repo on GitHub
-2. Clone this repository (do not fork)
-  - Suggestion: When cloning, specify a different folder name that is relevant to your project
-3. Remove the git remote: `git remote rm origin`
-4. Add a remote for your origin: `git remote add origin <your github repo URL>`
-5. Push to the new origin: `git push -u origin master`
-6. Verify that the skeleton code now shows up in your repo on GitHub
+  - Add credentials to .env_pub (DB_PASS and DB_USER are undefined upon cloning)
+    1) DB_USER= "-DO YOUR THING-"
+    2) DB_PASS= "-DO YOUR OTHER THING-"
+
+  - migrate and Seed db:
+    1)$ knex migrate:latest
+    2)$ knex migrate:rollback
+    3)$ knex migrate:latest
+    4)$ knex seed:run
+
+  - Finally, you can:
+    $ npm run local  
 
 ## Getting Started
 
-1. Create the `.env` by using `.env.example` as a reference: `cp .env.example .env`
-2. Update the .env file with your correct local information
-3. Install dependencies: `npm i`
-4. Fix to binaries for sass: `npm rebuild node-sass`
-5. Run migrations: `npm run knex migrate:latest`
-  - Check the migrations folder to see what gets created in the DB
-6. Run the seed: `npm run knex seed:run`
-  - Check the seeds file to see what gets seeded in the DB
-7. Run the server: `npm run local`
-8. Visit `http://localhost:8080/`
+  - Visit localhost:8080
+
+  - Signup! A user may signup with multiple emails but only the username must be unique.
+
+  - Type a task in the input field:
+    The following keyword will categorize the task if they initialize the input:
+      "Watch" - Movies
+      "Read"  - Books
+      "Try"   - Eat
+      "Buy"   - Products
+
+  - Log back in to view your too due items !
+
+##Known issues
+
+  - You cannot edit items that aren't categorized
+
+  - Categories navbar doesn't appear after login before page is refreshed
+
+  - Cannot delete items from to do list (missing delete button)
+
+  - Images don't look good
+
+  - Positioning of items isn't awesome
+
+  - Registration isn't strict enough
+
+  - Dependencies dont install properly
+
+
 
 ## Dependencies
+- psql
+
+- dotenv
+
+- nodemon
+
+- bcrypt
+
+- cookie-session
 
 - Node 5.10.x or above
+
 - NPM 3.8.x or above
