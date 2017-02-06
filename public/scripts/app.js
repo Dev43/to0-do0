@@ -96,21 +96,25 @@ $(() => {
       case 1:
         catObj.theCategory = "Movies";
         catObj.theClass = "list-group-item-danger";
+        $('.modal-content').addClass('panel-danger');
         catObj.cb = getMovie;
       break;
       case 2:
         catObj.theCategory = "Books";
         catObj.theClass = "list-group-item-info";
+        $('.modal-content').addClass('panel-info');
         catObj.cb = getBook;
       break;
       case 3:
         catObj.theCategory = "Food";
         catObj.theClass = "list-group-item-warning";
+        $('.modal-content').addClass('panel-warning');
         catObj.cb = getRestaurant;
       break;
       case 4:
         catObj.theCategory = "Products";
         catObj.theClass = "list-group-item-success";
+        $('.modal-content').addClass('panel-success');
         catObj.cb = getProduct;
         break;
       default:
@@ -132,7 +136,7 @@ $(() => {
       "class" : "list-group-item " + whatCategory($cat).theClass
     })
     .append($("<div/>", {
-      "class" : "checkbox",
+      "class" : "col-md-12 checkbox",
 
     })
       .append($("<label/>", {
