@@ -213,7 +213,14 @@ $(() => {
       $('.modal-body > .rating').text("Rating: "+res.rating);
 
       if(res.realLink){
-        $('.modal-body > .theLink').html("<a href = " + res.realLink + "> Click me to find out more! </a>");
+        $('.modal-body > .theLink').html("<a href = " + res.realLink + " > Click me to find out more! </a>");
+      } else {
+        $('.modal-body > .theLink').empty();
+      }
+
+
+      if(res.imgLink){
+        $('.modal-body > .image').html("<img src= " + res.imgLink + " style='width: 80px; height: 80px'>");
       }
 
       $('#myModal').modal({show: true});
