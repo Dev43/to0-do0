@@ -230,8 +230,23 @@ $(() => {
         $('#categoryInput').on('keydown', function(e){
           if(e.keyCode === 13){
             console.log(e.target.value)
-            // switch(e.target.category)
-          // upDbItems('tasks/edit/category', {taskid: taskId, category_id: } )
+            let categoryid;
+             switch(e.target.value){
+              case "Movies":
+              categoryid = 1;
+              break;
+              case "Books":
+              categoryid = 2;
+              break;
+              case "Food":
+              categoryid = 3;
+              break;
+              case "Products":
+              categoryid = 4;
+              break;
+             }
+             let data = "taskid=" + taskId + "&category_id" + categoryid;
+          upDbItems('tasks/edit/category', data, function(){console.log("done!")} )
         }
       })
       });
@@ -269,6 +284,7 @@ $(() => {
   $('#login-submit').on('click', (e) => {
     e.preventDefault();
     data = $('#login-form').serialize();
+    console.log(data)
     upDbItems('/users/login',data,(response)=>{
       // $user = JSON.parse(response);
       isLogged(JSON.parse(response));

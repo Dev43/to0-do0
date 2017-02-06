@@ -73,5 +73,21 @@ module.exports = (knex) => {
     // })
   })
 
+  router.post("/edit/category", (req, res) => {
+    let userid = auth(req, res);
+    const taskObj = {
+      taskid : req.body.taskid,
+      state : req.body.isComplete
+    }
+    console.log(req.body);
+    console.log(taskObj);
+    // return res.status(200).end();
+    return db_helper.editTask(userid ,taskObj.taskid, {isComplete: taskObj.state})
+    // .then((result)=> {
+    //   console.log(result);
+    //   return res.status(200).send('Task modified');
+    // })
+  })
+
   return router;
 }
