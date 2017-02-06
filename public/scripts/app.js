@@ -153,7 +153,7 @@ $(() => {
         $("<button/>", {
        "type" : "button",
        "name" : taskObj.category_id + taskObj.task_name,
-       "class" : "btn btn-primary modalToggle col-6 col-md-4",
+       "class" : "btn btn-primary modalToggle",
        "id" : taskObj.taskid,
        "text" : "More info"
       }) )
