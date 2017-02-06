@@ -265,13 +265,13 @@ $(function() {
   $(".categories").on('click', function(e) {
     var category = e.target.innerHTML;
     loadDbItems("/tasks/" + category, renderTasks)
-    $('#login-submit').on('click', function(e)  {
+  });
+  $('#login-submit').on('click', function(e)  {
     e.preventDefault();
     data = $('#login-form').serialize();
     upDbItems('/users/login',data, function (response) {
       isLogged(JSON.parse(response));
-      });
-    })
+    });
   })
   $('#register-submit').on('click', function(e) {
     e.preventDefault();
