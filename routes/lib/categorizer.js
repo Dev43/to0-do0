@@ -37,13 +37,5 @@
 }
 
 
-// console.log(decideOnCategory('watch Lord of the rings')) // movie
-// console.log(decideOnCategory('eat kimchi')) // food
-// console.log(decideOnCategory('try Shwartzs')) // food
-// console.log(decideOnCategory('read Lord of the Rings')) // books
-// console.log(decideOnCategory('buy Lord of the Rings')) // Product
-
-
-
 
 
