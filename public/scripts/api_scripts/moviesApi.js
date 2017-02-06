@@ -1,11 +1,11 @@
 
 // For TMDB
 // api key : 70c09d70d8283747ace652dfc047b3cf
-// https://api.themoviedb.org/3/movie/550**API-KEY**
+// https://api.themoviedb.org/3/movie/550?api_key=70c09d70d8283747ace652dfc047b3cf
 
 function getMovie(query){
 
-  let apiKey =  "**API-KEY**";
+  let apiKey =  "?api_key=70c09d70d8283747ace652dfc047b3cf";
   let url = "https://api.themoviedb.org/3/";
   let search = 'search/multi';
   let movie = 'movie/';
