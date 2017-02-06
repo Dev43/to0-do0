@@ -20,8 +20,9 @@
   <body>
     <% include partials/_navbar %>
     <div class="container-fluid">
-      <ul class="nav nav-tabs categories">
-      </ul>
+      <div class="collapse navbar-collapse">
+          <% include partials/_navbar_categories %>
+      </div>
     </div>
     <div class="container-fluid login main">
       <% include partials/_login %>

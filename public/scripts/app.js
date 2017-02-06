@@ -96,24 +96,29 @@ $(() => {
       case 1:
         catObj.theCategory = "Movies";
         catObj.theClass = "list-group-item-danger";
+        $('.modal-content').removeClass('panel-*');
         $('.modal-content').addClass('panel-danger');
         catObj.cb = getMovie;
       break;
       case 2:
         catObj.theCategory = "Books";
         catObj.theClass = "list-group-item-info";
+        $('.modal-content').removeClass('panel-danger');
+        console.log('removed ?');
         $('.modal-content').addClass('panel-info');
         catObj.cb = getBook;
       break;
       case 3:
         catObj.theCategory = "Food";
         catObj.theClass = "list-group-item-warning";
+        $('.modal-content').removeClass('panel-*');
         $('.modal-content').addClass('panel-warning');
         catObj.cb = getRestaurant;
       break;
       case 4:
         catObj.theCategory = "Products";
         catObj.theClass = "list-group-item-success";
+        $('.modal-content').removeClass('panel-*');
         $('.modal-content').addClass('panel-success');
         catObj.cb = getProduct;
         break;
@@ -136,8 +141,7 @@ $(() => {
       "class" : "list-group-item " + whatCategory($cat).theClass
     })
     .append($("<div/>", {
-      "class" : "col-md-12 checkbox",
-
+      "class" : "col-md-12 checkbox"
     })
       .append($("<label/>", {
         "class" : "task_label"
@@ -150,8 +154,7 @@ $(() => {
           "id": taskObj.taskid,
           "data-categoryId" : taskObj.category_id,
           "value": ""
-        })
-        )
+        }))
         .append($("<div/>", {"text": taskObj.task_name}), $("<button/>", {
        "type" : "button",
        "name" : taskObj.category_id + taskObj.task_name,
@@ -181,14 +184,15 @@ $(() => {
 
   // View rendering for categories with GET to DB
   function createCategorieElement (categoryObj) {
-    $category = $("<li/>", {
-      "role":"present"
-    })
-      .append($("<a/>", {
-        "href" : "#"
+    $category = $("<div/>", {
+      "class":"btn-group",
+      "role":"group"
+    }).append($("<button/>", {
+        "href" : "#",
+        "type" : "button",
+        "class" : "btn btn-default"
       }).append(categoryObj.category_name)
     );
-    $(".categories").append($category);
     return $category;
   }
   function renderCategories(categories) {
