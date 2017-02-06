@@ -206,6 +206,8 @@ $(() => {
 
   $('ul#tasks').delegate('button.modalToggle', 'click', (e) => {
     $cat = Number(e.target.name.slice(0,1));
+    let taskId = e.target.id;
+    console.log(taskId)
     $query = e.target.name.slice(1)+"";
     whatCategory($cat).cb($query,(res)=>{
       $('.modal-title').text(res.title);
@@ -223,11 +225,18 @@ $(() => {
       } else {
          $('.modal-body > .image').empty();
       }
-
-
       $('.modal-footer > .edit').on('click', function(e){
         $('.modal-category').html('<input id="categoryInput" name="category" type="text" class="form-control" placeholder="' + whatCategory($cat).theCategory + '">');
+        $('#categoryInput').on('keydown', function(e){
+          if(e.keyCode === 13){
+            console.log(e.target.value)
+            // switch(e.target.category)
+          // upDbItems('tasks/edit/category', {taskid: taskId, category_id: } )
+        }
       })
+      });
+
+
 
       $('#myModal').modal({show: true});
     });
