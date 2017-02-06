@@ -19,7 +19,6 @@ $(() => {
   }
 
   function errorCb(errResponse, type){
-   // alert(type + ": " + errResponse.responseText)
     return $(".errorMsg").html(type + ": " + errResponse.responseText)
   }
 
@@ -103,21 +102,16 @@ $(() => {
       case 2:
         catObj.theCategory = "Books";
         catObj.theClass = "list-group-item-info";
-        // $('.modal-content').removeClass('panel-danger');
-        // console.log('removed ?');
-
         catObj.cb = getBook;
       break;
       case 3:
         catObj.theCategory = "Food";
         catObj.theClass = "list-group-item-warning";
-        // $('.modal-content').removeClass('panel-*');
         catObj.cb = getRestaurant;
       break;
       case 4:
         catObj.theCategory = "Products";
         catObj.theClass = "list-group-item-success";
-        // $('.modal-content').removeClass('panel-*');
         catObj.cb = getProduct;
         break;
       default:
@@ -161,8 +155,6 @@ $(() => {
        "name" : taskObj.category_id + taskObj.task_name,
        "class" : "btn btn-primary modalToggle col-6 col-md-4",
        "id" : taskObj.taskid,
-      //  "data-toggle" : "modal",
-      //  "data-target" : "#myModal",
        "text" : "More info"
       }) )
       )
@@ -206,17 +198,10 @@ $(() => {
       $('.categories').append(activeElement);
   }
 
-  // View rendering for tasks with GET to DB
-  // function renderModal(query) {
-  //   $('.modal-title').innerHTML(query.title);
-  //   $('.modal-body > h5').innerHTML(query.description);
-  //   $('.modal-body > h3').innerHTML(query.rating);
-  // }
 
   $('ul#tasks').delegate('button.modalToggle', 'click', (e) => {
     $cat = Number(e.target.name.slice(0,1));
     let taskId = e.target.id;
-    console.log(taskId)
     $query = e.target.name.slice(1)+"";
     whatCategory($cat).cb($query,(res)=>{
       $('.modal-title').text(res.title);
@@ -238,7 +223,6 @@ $(() => {
         $('.modal-category').html('<input id="categoryInput" name="category" type="text" class="form-control" placeholder="' + whatCategory($cat).theCategory + '">');
         $('#categoryInput').on('keydown', function(e){
           if(e.keyCode === 13){
-            console.log(e.target.value)
             let categoryid;
              switch(e.target.value){
               case "Movies":
@@ -255,8 +239,7 @@ $(() => {
               break;
              }
              let data = "taskid=" + taskId + "&category_id=" + categoryid;
-             console.log(data);
-          upDbItems('tasks/edit/category', data, function(){console.log("done!")} )
+          upDbItems('tasks/edit/category', data, function(){return;} )
         }
       })
       });
@@ -265,17 +248,6 @@ $(() => {
 
       $('#myModal').modal({show: true});
     });
-    // renderModal($theQuery);
-    // console.log($cat);
-    // console.log($query);
-    // console.log($cat);
-    // console.log(
-    //   "id :",
-    //   e.target.id,
-    //   " & ",
-    //   "data-categoryId :",
-    //   e.target.category_id
-    // );
   });
   $("#newTask").keydown(function(e) {
     if(e.keyCode === 13){
@@ -294,9 +266,7 @@ $(() => {
   $('#login-submit').on('click', (e) => {
     e.preventDefault();
     data = $('#login-form').serialize();
-    console.log(data)
     upDbItems('/users/login',data,(response)=>{
-      // $user = JSON.parse(response);
       isLogged(JSON.parse(response));
     });
   })
@@ -316,7 +286,6 @@ $(() => {
     })
   })
   $('ul#tasks').delegate('li>div>label>input.task-checkbox', 'click', (e) => {
-    // console.log(e.target);
     $task = {
       taskid : e.target.id,
       isComplete : e.target.checked
@@ -345,24 +314,8 @@ $(() => {
          $('.modal-body > .image').empty();
       }
 
-
-      $('.modal-footer > .edit').on('click', function(e){
-
-      })
-
       $('#myModal').modal({show: true});
     });
-    // renderModal($theQuery);
-    // console.log($cat);
-    // console.log($query);
-    // console.log($cat);
-    // console.log(
-    //   "id :",
-    //   e.target.id,
-    //   " & ",
-    //   "data-categoryId :",
-    //   e.target.category_id
-    // );
   });
   $(".navbar-brand").on('click', function(e){
     loadDbItems("/tasks/", renderTasks)
@@ -411,9 +364,6 @@ function getBook(query,cb){
       let theBook = books.items[0].volumeInfo;
       $('.modal-content').addClass('panel-info');
       bookInfo =  standardInformationBuilder(theBook.description,(theBook.imageLinks && ""), theBook.averageRating, theBook.title, theBook.previewLink )
-
-      console.log(bookInfo)
-
       return cb(bookInfo);
   });
 }
@@ -452,7 +402,6 @@ function getMovie(query,cb){
       $.ajax(createSettings(movie, "",  movieId)).done(function(movie){
         let movieInfo = standardInformationBuilder(movie.overview, "", movie.vote_average, movie.title, movie.homepage );
         $('.modal-content').addClass('panel-danger');
-        console.log(movie);
         return cb(movieInfo);
       })
     });
@@ -506,45 +455,42 @@ function getRestaurant(query,cb){
     $.ajax(createSettings(businessUrl, relevantRestaurantId, "")).done(function (resto) {
       let restoInfo = standardInformationBuilder(resto.phone, resto.image_url, resto.rating, resto.name, resto.url)
       $('.modal-content').addClass('panel-warning');
-      console.log(resto)
       return cb(restoInfo);
 
     });
   });
   }
 
-function getProduct(query,cb){
-  let url = "https://svcs.ebay.com/services/search/FindingService/v1?**SECURITY-APPNAME**&OPERATION-NAME=findItemsByKeywords&SERVICE-VERSION=1.0.0&RESPONSE-DATA-FORMAT=JSON&REST-PAYLOAD"
-  let endUrl = "&paginationInput.entriesPerPage=1"
+  function getProduct(query,cb){
+    let url = "https://svcs.ebay.com/services/search/FindingService/v1?**SECURITY-APPNAME**&OPERATION-NAME=findItemsByKeywords&SERVICE-VERSION=1.0.0&RESPONSE-DATA-FORMAT=JSON&REST-PAYLOAD"
+    let endUrl = "&paginationInput.entriesPerPage=1"
 
-  function getProductName(string){
-    string =  string.split(" ");
-    string.shift();
-   return "(" + string.join(",") + ")";
-  }
-
-  function makeQuery( query){
-    return url + "&keywords=" + encodeURI(query) + endUrl;
-  }
-
-  function createSettings(query){
-    return {
-      "async": true,
-      "crossDomain": true,
-      "url": 'https://cors-anywhere.herokuapp.com/' + makeQuery(query),
-      "method": "GET",
-      "headers": {"x-requested-with": "dev/me"}
+    function getProductName(string){
+      string =  string.split(" ");
+      string.shift();
+     return "(" + string.join(",") + ")";
     }
+
+    function makeQuery( query){
+      return url + "&keywords=" + encodeURI(query) + endUrl;
+    }
+
+    function createSettings(query){
+      return {
+        "async": true,
+        "crossDomain": true,
+        "url": 'https://cors-anywhere.herokuapp.com/' + makeQuery(query),
+        "method": "GET",
+        "headers": {"x-requested-with": "dev/me"}
+      }
+    }
+
+    $('.modal-content').addClass('panel-success');
+    $.ajax(createSettings(getProductName(query))).done(function (products) {
+      let theProducts = JSON.parse(products);
+      let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
+      let theResults = standardInformationBuilder((resultInfo.subtitle || resultInfo.title[0]) , (resultInfo.galleryURL[0] || ""), resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0], resultInfo.viewItemURL[0])
+      return cb(theResults);
+    });
   }
-
-  $('.modal-content').addClass('panel-success');
-  $.ajax(createSettings(getProductName(query))).done(function (products) {
-    let theProducts = JSON.parse(products);
-    let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
-    console.log(resultInfo)
-    let theResults = standardInformationBuilder((resultInfo.subtitle || resultInfo.title[0]) , (resultInfo.galleryURL[0] || ""), resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0], resultInfo.viewItemURL[0])
-    return cb(theResults);
-  });
-}
-
 });

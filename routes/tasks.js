@@ -14,7 +14,6 @@ module.exports = (knex) => {
 
   router.get("/active", (req, res) => {
     let userid = auth(req, res);
-    console.log(userid);
     db_helper.showAllActiveTasksFromUser(userid)
     .then((response) => {
       return res.json(response)
@@ -29,7 +28,7 @@ module.exports = (knex) => {
     let category = req.params.category;
     let userid = auth(req, res);
     db_helper.showAllFromCategory(userid, category)
-    .then((result) => {console.log(result)
+    .then((result) => {
       return res.status(200).json(result)} )
   })
 
@@ -63,14 +62,7 @@ module.exports = (knex) => {
       taskid : req.body.taskid,
       state : req.body.isComplete
     }
-    console.log(req.body);
-    console.log(taskObj);
-    // return res.status(200).end();
     return db_helper.editTask(userid ,taskObj.taskid, {isComplete: taskObj.state})
-    // .then((result)=> {
-    //   console.log(result);
-    //   return res.status(200).send('Task modified');
-    // })
   })
 
   router.post("/edit/category", (req, res) => {
@@ -80,12 +72,7 @@ module.exports = (knex) => {
       taskid : req.body.taskid,
       category_id : req.body.category_id
     }
-    // return res.status(200).end();
     return db_helper.editTask(userid ,taskObj.taskid, {category_id: taskObj.category_id})
-    // .then((result)=> {
-    //   console.log(result);
-    //   return res.status(200).send('Task modified');
-    // })
   })
 
   return router;
