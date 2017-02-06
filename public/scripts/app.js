@@ -216,12 +216,28 @@ $(() => {
     $cat = Number(e.target.name.slice(0,1));
     $query = e.target.name.slice(1)+"";
     whatCategory($cat).cb($query,(res)=>{
-      // $('.modal-content').empty();
       $('.modal-title').text(res.title);
+      $('.modal-category').text(whatCategory($cat).theCategory);
       $('.modal-body > h5').text(res.description);
       $('.modal-body > .rating').text("Rating: "+res.rating);
+
+      if(res.realLink){
+        $('.modal-body > .theLink').html("<a href = " + res.realLink + " > Click me to find out more! </a>");
+      } else {
+        $('.modal-body > .theLink').empty();
+      }
+      if(res.imgLink){
+        $('.modal-body > .image').html("<img src= " + res.imgLink + " style='width: 80px; height: 80px'>");
+      } else {
+         $('.modal-body > .image').empty();
+      }
+
+
+      $('.modal-footer > .edit').on('click', function(e){
+
+      })
+
       $('#myModal').modal({show: true});
-      console.log(res);
     });
     // renderModal($theQuery);
     // console.log($cat);
@@ -298,12 +314,13 @@ $(() => {
 
 
 
-function standardInformationBuilder(description, imgLink, rating, title){
+function standardInformationBuilder(description, imgLink, rating, title, realLink){
   let info = {
     title: title,
     rating: rating,
     description: description,
-    imgLink: imgLink
+    imgLink: imgLink,
+    realLink: realLink
   }
   return info;
 }
@@ -336,7 +353,8 @@ function getBook(query,cb){
 
   $.ajax(createSettings(query)).done(function (books) {
       let theBook = books.items[0].volumeInfo;
-      bookInfo =  standardInformationBuilder(theBook.description,theBook.imageLinks.smallThumbnail, theBook.averageRating, theBook.title )
+      console.log(books)
+      bookInfo =  standardInformationBuilder(theBook.description,(theBook.imageLinks && ""), theBook.averageRating, theBook.title, theBook.previewLink )
 
       console.log(bookInfo)
 
@@ -376,8 +394,8 @@ function getMovie(query,cb){
       let movieId = moviesOrTvShows.results[0].id;
       // movies.media to know if tv show or movie -- implement later
       $.ajax(createSettings(movie, "",  movieId)).done(function(movie){
-        let movieInfo = standardInformationBuilder(movie.overview, "", movie.vote_average, movie.title );
-        console.log(movieInfo);
+        let movieInfo = standardInformationBuilder(movie.overview, "", movie.vote_average, movie.title, movie.homepage );
+        console.log(movie);
         return cb(movieInfo);
       })
     });
@@ -430,7 +448,7 @@ function getRestaurant(query,cb){
 
     let relevantRestaurantId = restaurants.businesses[0].id;
     $.ajax(createSettings(businessUrl, relevantRestaurantId, "")).done(function (resto) {
-      let restoInfo = standardInformationBuilder(resto.phone, resto.image_url, resto.rating, resto.name)
+      let restoInfo = standardInformationBuilder(resto.phone, resto.image_url, resto.rating, resto.name, resto.url)
       console.log(resto)
       return cb(restoInfo);
 
@@ -466,7 +484,7 @@ function getProduct(query,cb){
     let theProducts = JSON.parse(products);
     let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
     console.log(resultInfo)
-    let theResults = standardInformationBuilder((resultInfo.subtitle || resultInfo.title[0]) , (resultInfo.galleryURL[0] || ""), resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0])
+    let theResults = standardInformationBuilder((resultInfo.subtitle || resultInfo.title[0]) , (resultInfo.galleryURL[0] || ""), resultInfo.condition[0].conditionDisplayName[0], resultInfo.title[0], resultInfo.viewItemURL[0])
     return cb(theResults);
   });
 }
