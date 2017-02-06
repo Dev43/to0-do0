@@ -245,7 +245,8 @@ $(() => {
               categoryid = 4;
               break;
              }
-             let data = "taskid=" + taskId + "&category_id" + categoryid;
+             let data = "taskid=" + taskId + "&category_id=" + categoryid;
+             console.log(data);
           upDbItems('tasks/edit/category', data, function(){console.log("done!")} )
         }
       })
