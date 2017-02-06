@@ -209,6 +209,7 @@ $(() => {
     $query = e.target.name.slice(1)+"";
     whatCategory($cat).cb($query,(res)=>{
       $('.modal-title').text(res.title);
+      $('.modal-category').text(whatCategory($cat).theCategory);
       $('.modal-body > h5').text(res.description);
       $('.modal-body > .rating').text("Rating: "+res.rating);
 
@@ -217,14 +218,18 @@ $(() => {
       } else {
         $('.modal-body > .theLink').empty();
       }
-
-
       if(res.imgLink){
         $('.modal-body > .image').html("<img src= " + res.imgLink + " style='width: 80px; height: 80px'>");
+      } else {
+         $('.modal-body > .image').empty();
       }
 
+
+      $('.modal-footer > .edit').on('click', function(e){
+
+      })
+
       $('#myModal').modal({show: true});
-      console.log(res);
     });
     // renderModal($theQuery);
     // console.log($cat);
