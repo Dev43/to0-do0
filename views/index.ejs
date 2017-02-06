@@ -21,7 +21,6 @@
     <% include partials/_navbar %>
     <div class="container-fluid">
       <ul class="nav nav-tabs categories">
-
       </ul>
     </div>
     <div class="container-fluid login main">
@@ -31,8 +30,10 @@
       <% include partials/_register %>
     </div>
     <div class="container-fluid tasks main">
-      <% include partials/_input %>
-      <div class="col-md-12 ">
+      <div class="row">
+        <% include partials/_input %>
+      </div>
+      <div class="row">
         <ul class="list-group" id="tasks">
         </ul>
       </div>
