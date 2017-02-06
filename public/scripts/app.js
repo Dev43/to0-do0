@@ -213,7 +213,70 @@ $(() => {
   //   $('.modal-body > h3').innerHTML(query.rating);
   // }
 
+  $('ul#tasks').delegate('button.modalToggle', 'click', (e) => {
+    $cat = Number(e.target.name.slice(0,1));
+    let taskId = e.target.id;
+    console.log(taskId)
+    $query = e.target.name.slice(1)+"";
+    whatCategory($cat).cb($query,(res)=>{
+      $('.modal-title').text(res.title);
+      $('.modal-category').text(whatCategory($cat).theCategory);
+      $('.modal-body > h5').text(res.description);
+      $('.modal-body > .rating').text("Rating: "+res.rating);
 
+      if(res.realLink){
+        $('.modal-body > .theLink').html("<a href = " + res.realLink + " > Click me to find out more! </a>");
+      } else {
+        $('.modal-body > .theLink').empty();
+      }
+      if(res.imgLink){
+        $('.modal-body > .image').html("<img src= " + res.imgLink + " style='width: 80px; height: 80px'>");
+      } else {
+         $('.modal-body > .image').empty();
+      }
+      $('.modal-footer > .edit').on('click', function(e){
+        $('.modal-category').html('<input id="categoryInput" name="category" type="text" class="form-control" placeholder="' + whatCategory($cat).theCategory + '">');
+        $('#categoryInput').on('keydown', function(e){
+          if(e.keyCode === 13){
+            console.log(e.target.value)
+            let categoryid;
+             switch(e.target.value){
+              case "Movies":
+              categoryid = 1;
+              break;
+              case "Books":
+              categoryid = 2;
+              break;
+              case "Food":
+              categoryid = 3;
+              break;
+              case "Products":
+              categoryid = 4;
+              break;
+             }
+             let data = "taskid=" + taskId + "&category_id=" + categoryid;
+             console.log(data);
+          upDbItems('tasks/edit/category', data, function(){console.log("done!")} )
+        }
+      })
+      });
+
+
+
+      $('#myModal').modal({show: true});
+    });
+    // renderModal($theQuery);
+    // console.log($cat);
+    // console.log($query);
+    // console.log($cat);
+    // console.log(
+    //   "id :",
+    //   e.target.id,
+    //   " & ",
+    //   "data-categoryId :",
+    //   e.target.category_id
+    // );
+  });
   $("#newTask").keydown(function(e) {
     if(e.keyCode === 13){
       e.preventDefault();
@@ -231,6 +294,7 @@ $(() => {
   $('#login-submit').on('click', (e) => {
     e.preventDefault();
     data = $('#login-form').serialize();
+    console.log(data)
     upDbItems('/users/login',data,(response)=>{
       // $user = JSON.parse(response);
       isLogged(JSON.parse(response));
