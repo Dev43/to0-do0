@@ -96,30 +96,28 @@ $(() => {
       case 1:
         catObj.theCategory = "Movies";
         catObj.theClass = "list-group-item-danger";
-        $('.modal-content').removeClass('panel-*');
-        $('.modal-content').addClass('panel-danger');
+        // $('.modal-content').removeClass('panel-*');
+
         catObj.cb = getMovie;
       break;
       case 2:
         catObj.theCategory = "Books";
         catObj.theClass = "list-group-item-info";
-        $('.modal-content').removeClass('panel-danger');
-        console.log('removed ?');
-        $('.modal-content').addClass('panel-info');
+        // $('.modal-content').removeClass('panel-danger');
+        // console.log('removed ?');
+
         catObj.cb = getBook;
       break;
       case 3:
         catObj.theCategory = "Food";
         catObj.theClass = "list-group-item-warning";
-        $('.modal-content').removeClass('panel-*');
-        $('.modal-content').addClass('panel-warning');
+        // $('.modal-content').removeClass('panel-*');
         catObj.cb = getRestaurant;
       break;
       case 4:
         catObj.theCategory = "Products";
         catObj.theClass = "list-group-item-success";
-        $('.modal-content').removeClass('panel-*');
-        $('.modal-content').addClass('panel-success');
+        // $('.modal-content').removeClass('panel-*');
         catObj.cb = getProduct;
         break;
       default:
@@ -141,7 +139,7 @@ $(() => {
       "class" : "list-group-item " + whatCategory($cat).theClass
     })
     .append($("<div/>", {
-      "class" : "col-md-12 checkbox"
+      "class" : "checkbox"
     })
       .append($("<label/>", {
         "class" : "task_label"
@@ -155,7 +153,10 @@ $(() => {
           "data-categoryId" : taskObj.category_id,
           "value": ""
         }))
-        .append($("<div/>", {"text": taskObj.task_name}), $("<button/>", {
+        .append($("<div/>", {
+          "text": taskObj.task_name
+        }),
+        $("<button/>", {
        "type" : "button",
        "name" : taskObj.category_id + taskObj.task_name,
        "class" : "btn btn-primary modalToggle col-6 col-md-4",
@@ -184,7 +185,7 @@ $(() => {
 
   // View rendering for categories with GET to DB
   function createCategorieElement (categoryObj) {
-    $category = $("<div/>", {
+    $category = ($("<div/>", {
       "class":"btn-group",
       "role":"group"
     }).append($("<button/>", {
@@ -192,7 +193,7 @@ $(() => {
         "type" : "button",
         "class" : "btn btn-default"
       }).append(categoryObj.category_name)
-    );
+    ));
     return $category;
   }
   function renderCategories(categories) {
@@ -212,45 +213,7 @@ $(() => {
   //   $('.modal-body > h3').innerHTML(query.rating);
   // }
 
-  $('ul#tasks').delegate('button.modalToggle', 'click', (e) => {
-    $cat = Number(e.target.name.slice(0,1));
-    $query = e.target.name.slice(1)+"";
-    whatCategory($cat).cb($query,(res)=>{
-      $('.modal-title').text(res.title);
-      $('.modal-category').text(whatCategory($cat).theCategory);
-      $('.modal-body > h5').text(res.description);
-      $('.modal-body > .rating').text("Rating: "+res.rating);
 
-      if(res.realLink){
-        $('.modal-body > .theLink').html("<a href = " + res.realLink + " > Click me to find out more! </a>");
-      } else {
-        $('.modal-body > .theLink').empty();
-      }
-      if(res.imgLink){
-        $('.modal-body > .image').html("<img src= " + res.imgLink + " style='width: 80px; height: 80px'>");
-      } else {
-         $('.modal-body > .image').empty();
-      }
-
-
-      $('.modal-footer > .edit').on('click', function(e){
-
-      })
-
-      $('#myModal').modal({show: true});
-    });
-    // renderModal($theQuery);
-    // console.log($cat);
-    // console.log($query);
-    // console.log($cat);
-    // console.log(
-    //   "id :",
-    //   e.target.id,
-    //   " & ",
-    //   "data-categoryId :",
-    //   e.target.category_id
-    // );
-  });
   $("#newTask").keydown(function(e) {
     if(e.keyCode === 13){
       e.preventDefault();
@@ -298,16 +261,45 @@ $(() => {
       e.target.value
     })
   });
-  // $('ul#tasks').delegate('button.modalToggle', 'click', (e) => {
-  //   // console.log("id :", e.target.id, " & ", "data-categoryId :", e.target.category_id);
-  //   $cat = Number(e.target.name.slice(0,1));
-  //   $query = e.target.name.slice(1)+"";
-  //   $theQuery = whatCategory($cat).cb($query);
-  //   console.log($cat);
-  //   console.log($query);
-  //   console.log($cat);
-  //   $('#myModal').modal({show: true});
-  // });
+  $('ul#tasks').delegate('button.modalToggle', 'click', (e) => {
+    $cat = Number(e.target.name.slice(0,1));
+    $query = e.target.name.slice(1)+"";
+    whatCategory($cat).cb($query,(res)=>{
+      $('.modal-title').text(res.title);
+      $('.modal-category').text(whatCategory($cat).theCategory);
+      $('.modal-body > h5').text(res.description);
+      $('.modal-body > .rating').text("Rating: "+res.rating);
+
+      if(res.realLink){
+        $('.modal-body > .theLink').html("<a href = " + res.realLink + " > Click me to find out more! </a>");
+      } else {
+        $('.modal-body > .theLink').empty();
+      }
+      if(res.imgLink){
+        $('.modal-body > .image').html("<img src= " + res.imgLink + " style='width: 80px; height: 80px'>");
+      } else {
+         $('.modal-body > .image').empty();
+      }
+
+
+      $('.modal-footer > .edit').on('click', function(e){
+
+      })
+
+      $('#myModal').modal({show: true});
+    });
+    // renderModal($theQuery);
+    // console.log($cat);
+    // console.log($query);
+    // console.log($cat);
+    // console.log(
+    //   "id :",
+    //   e.target.id,
+    //   " & ",
+    //   "data-categoryId :",
+    //   e.target.category_id
+    // );
+  });
   $(".navbar-brand").on('click', function(e){
     loadDbItems("/tasks/", renderTasks)
   })
@@ -353,7 +345,7 @@ function getBook(query,cb){
 
   $.ajax(createSettings(query)).done(function (books) {
       let theBook = books.items[0].volumeInfo;
-      console.log(books)
+      $('.modal-content').addClass('panel-info');
       bookInfo =  standardInformationBuilder(theBook.description,(theBook.imageLinks && ""), theBook.averageRating, theBook.title, theBook.previewLink )
 
       console.log(bookInfo)
@@ -395,12 +387,12 @@ function getMovie(query,cb){
       // movies.media to know if tv show or movie -- implement later
       $.ajax(createSettings(movie, "",  movieId)).done(function(movie){
         let movieInfo = standardInformationBuilder(movie.overview, "", movie.vote_average, movie.title, movie.homepage );
+        $('.modal-content').addClass('panel-danger');
         console.log(movie);
         return cb(movieInfo);
       })
     });
   }
-
 
 function getRestaurant(query,cb){
   let searchUrl = "https://api.yelp.com/v3/businesses/search?";
@@ -449,6 +441,7 @@ function getRestaurant(query,cb){
     let relevantRestaurantId = restaurants.businesses[0].id;
     $.ajax(createSettings(businessUrl, relevantRestaurantId, "")).done(function (resto) {
       let restoInfo = standardInformationBuilder(resto.phone, resto.image_url, resto.rating, resto.name, resto.url)
+      $('.modal-content').addClass('panel-warning');
       console.log(resto)
       return cb(restoInfo);
 
@@ -480,6 +473,7 @@ function getProduct(query,cb){
     }
   }
 
+  $('.modal-content').addClass('panel-success');
   $.ajax(createSettings(getProductName(query))).done(function (products) {
     let theProducts = JSON.parse(products);
     let resultInfo = theProducts.findItemsByKeywordsResponse[0].searchResult[0].item[0];
