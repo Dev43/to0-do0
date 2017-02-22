@@ -9,7 +9,7 @@ var settings = {
   "url": 'https://cors-anywhere.herokuapp.com/' + makeQuery(query),
   "method": "GET",
   "headers": {
-    "authorization": "Bearer o9NWDKOyt5OThXDjNeFb_1HNfrhxHycMgYuePjJUe66Bk05Zfy2m5A4_d9raPBh-Wzc-cyy60fe-80Gjk1hxl1dHp3wo8IuKtt9XNW8CyG9wQDDuN-PcbjaHdA2WWHYx",
+    "authorization": "AUTHORIZATION",
     "cache-control": "no-cache",
   }
 }
@@ -21,7 +21,7 @@ function createSettings(url, query, method){
     "url": 'https://cors-anywhere.herokuapp.com/' + makeQuery(url, query, method),
     "method": "GET",
     "headers": {
-    "authorization": "Bearer o9NWDKOyt5OThXDjNeFb_1HNfrhxHycMgYuePjJUe66Bk05Zfy2m5A4_d9raPBh-Wzc-cyy60fe-80Gjk1hxl1dHp3wo8IuKtt9XNW8CyG9wQDDuN-PcbjaHdA2WWHYx",
+    "authorization": "AUTHORIZATION",
     "cache-control": "no-cache",
     }
   }
