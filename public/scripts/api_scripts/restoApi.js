@@ -9,7 +9,7 @@ var settings = {
   "url": 'https://cors-anywhere.herokuapp.com/' + makeQuery(query),
   "method": "GET",
   "headers": {
-    "authorization": "**AUTHORIZATION**",
+    "authorization": "AUTHORIZATION",
     "cache-control": "no-cache",
   }
 }
@@ -21,7 +21,7 @@ function createSettings(url, query, method){
     "url": 'https://cors-anywhere.herokuapp.com/' + makeQuery(url, query, method),
     "method": "GET",
     "headers": {
-    "authorization": "**AUTHORIZATION**",
+    "authorization": "AUTHORIZATION",
     "cache-control": "no-cache",
     }
   }

@@ -374,7 +374,7 @@ function getBook(query,cb){
 
 function getMovie(query,cb){
 
-  var apiKey =  "**API-KEY**";
+  var apiKey =  "?api_key=API_KEY";
   var url = "https://api.themoviedb.org/3/";
   var search = 'search/multi';
   var movie = 'movie/';
@@ -422,7 +422,7 @@ function getRestaurant(query,cb){
     "url": 'https://cors-anywhere.herokuapp.com/' + makeQuery(query),
     "method": "GET",
     "headers": {
-      "authorization": "**AUTHORIZATION**",
+      "authorization": "AUTHORIZATION",
       "cache-control": "no-cache",
     }
   }
@@ -434,7 +434,7 @@ function getRestaurant(query,cb){
       "url": 'https://cors-anywhere.herokuapp.com/' + makeQuery(url, query, method),
       "method": "GET",
       "headers": {
-      "authorization": "**AUTHORIZATION**",
+      "authorization": "AUTHORIZATION",
       "cache-control": "no-cache",
       }
     }
@@ -466,7 +466,7 @@ function getRestaurant(query,cb){
   }
 
   function getProduct(query,cb){
-    var url = "https://svcs.ebay.com/services/search/FindingService/v1?**SECURITY-APPNAME**&OPERATION-NAME=findItemsByKeywords&SERVICE-VERSION=1.0.0&RESPONSE-DATA-FORMAT=JSON&REST-PAYLOAD"
+    var url = "https://svcs.ebay.com/services/search/FindingService/v1?SECURITY-APPNAME&OPERATION-NAME=findItemsByKeywords&SERVICE-VERSION=1.0.0&RESPONSE-DATA-FORMAT=JSON&REST-PAYLOAD"
     var endUrl = "&paginationInput.entriesPerPage=1"
 
     function getProductName(string){
